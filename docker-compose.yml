@@ -17,13 +17,13 @@ services:
     build:
       context: .
     ports:
-      - '8000:8000'
+      - '${PORT}:${PORT}'
     volumes:
       - ./src:/workspace/src
       - ./public:/workspace/public
     environment:
       - NODE_ENV=development
-      - PORT=8000
+      - PORT=${PORT}
       # if you change this, change the MYSQL_DATABASE in the main_db service
       - DATABASE_NAME=${M_DATABASE_NAME}
       - M_DATABASE_PORT=${M_DATABASE_PORT}
@@ -31,7 +31,7 @@ services:
       - M_DATABASE_PASSWORD=${M_DATABASE_PASSWORD}
       - M_DATABASE_HOST=${M_DATABASE_HOST}
       - M_DATABASE_NAME=${M_DATABASE_NAME}
-      - REDIS_URL=redis://cache:6379
+      - REDIS_URL=${REDIS_URL}
     networks:
       - backend-to-cache
       - backend-to-main_db

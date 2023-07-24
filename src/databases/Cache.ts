@@ -4,9 +4,14 @@ import { ApiError } from '../common/api_response';
 
 export default class Cache {
   connection;
+  redis_url?: string;
 
   constructor(redis_url?: string | undefined) {
     dev_log({ redis_url });
+
+    this.redis_url = redis_url;
+    if (!redis_url) return;
+
     this.connection = redis_url
       ? createClient({
           url: redis_url,
@@ -17,6 +22,7 @@ export default class Cache {
     );
     process.on('exit', () => {
       console.log('closing redis...');
+      if (!this.connection) return;
       this.connection.quit();
     });
     this.connection.connect();
@@ -25,6 +31,7 @@ export default class Cache {
   }
 
   async save(key: string, value: {}): Promise<boolean> {
+    if (this.redis_url === undefined || !this.connection) return false;
     try {
       await this.connection.set(key, JSON.stringify(value), {
         EX: 60, // The cache is valid for 60 seconds
@@ -37,6 +44,7 @@ export default class Cache {
   }
 
   async get(key: string) {
+    if (this.redis_url === undefined || !this.connection) return false;
     try {
       const obj = await this.connection.get(key);
       return obj ? JSON.parse(obj) : undefined;
@@ -47,6 +55,7 @@ export default class Cache {
   }
 
   async delete(key: string) {
+    if (this.redis_url === undefined || !this.connection) return false;
     try {
       return await this.connection.del(key);
     } catch (error: any) {
