@@ -46,10 +46,10 @@ export default class M_Database {
     // only for development
     this.connection.query('DROP TABLE IF EXISTS posts');
 
-    // wait for the database to be created, 300ms should be enough
+    // wait for the database to be created, 1000ms should be enough
     setTimeout(() => {
       this._createTables(tables);
-    }, 300);
+    }, 1000);
 
     console.log('MySQL connected');
   }
