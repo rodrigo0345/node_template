@@ -24,6 +24,8 @@ import { authRouter } from './routes/auth';
 export let mDatabase: M_Database;
 export let cache: Cache;
 
+const offset_time = Number.parseInt(process.env.M_DATABASE_OFFSET_TIME ?? '10000');
+
 setTimeout(() => {
   mDatabase = new M_Database(
     process.env.M_DATABASE_PORT,
@@ -31,9 +33,11 @@ setTimeout(() => {
     process.env.M_DATABASE_USER,
     process.env.M_DATABASE_PASSWORD,
     process.env.M_DATABASE_NAME,
+    offset_time,
+    process.env.M_DATABASE_TIME_TO_CHECK,
   );
   cache = new Cache(process.env.REDIS_URL);
-}, 10000)
+}, offset_time);
 
 
 const app = express();
