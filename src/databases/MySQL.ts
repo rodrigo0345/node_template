@@ -1,6 +1,7 @@
 import { ApiError, ApiResponse } from "../common/api_response";
-import Database, { DatabaseConfig } from "../interfaces/Database";
-import DatabaseTable from "../interfaces/DatabaseTable";
+import dev_log from "../common/dev_log";
+import Database, { DatabaseConfig } from "../interfaces/Database/Database";
+import DatabaseTable from "../interfaces/Database/DatabaseTable";
 import mysql, { Pool, ResultSetHeader, RowDataPacket } from 'mysql2';
 
 export default class MySQL implements Database {
@@ -13,7 +14,7 @@ export default class MySQL implements Database {
         this.tables = tables;
     }
     
-    connect(): void {
+    async connect(): Promise<void> {
         this.recursiveTesting();
 
         try{
@@ -22,6 +23,7 @@ export default class MySQL implements Database {
                 port: this.config.port,
                 host: this.config.host,
                 user: this.config.user,
+                database: this.config.database,
                 password: this.config.password,
                 idleTimeout: this.config.idleTimeout,
             })
@@ -30,9 +32,10 @@ export default class MySQL implements Database {
             console.error(error);
             return;
         }
-        this.initialSetup();
+        await this.initialSetup();
         
         this.tables.forEach(table => this.createTable(table));
+        dev_log('MySQL connected');
     }
     
     disconnect(): void {
@@ -81,6 +84,8 @@ export default class MySQL implements Database {
         stringQuery += ');';
 
         this.connection.query(stringQuery);
+
+        dev_log(`Created table ${table.name}`);
     }
 
     // this enables us to detect when the 

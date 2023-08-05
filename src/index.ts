@@ -6,6 +6,11 @@ import Cache from './databases/Cache';
 import dev_log from './common/dev_log';
 import { upload } from './routes/image';
 import { authRouter } from './routes/auth';
+import MySQL from './databases/MySQL';
+import { DatabaseConfig } from './interfaces/Database/Database';
+import { mysqlTables } from './types/db';
+import DatabaseService from './databases/DatabaseService';
+import { off } from 'process';
 
 /* 
     Here is the entry point of the application.
@@ -20,31 +25,37 @@ import { authRouter } from './routes/auth';
     The benefit of using containers is that you don't need to install anything on your machine, everything is done inside the container and it brings already configured database and cache.
 */
 
+console.log('Node mode:', process.env.NODE_ENV ?? 'not set');
+
 // the timeout is used to give the database and cache time to start
 export let mDatabase: M_Database;
 export let cache: Cache;
 
-const offset_time = Number.parseInt(process.env.M_DATABASE_OFFSET_TIME ?? '10000');
+const offsetDelay = Number.parseInt(process.env.M_DATABASE_OFFSET_TIME ?? '10000');
 
-setTimeout(() => {
-  mDatabase = new M_Database(
-    process.env.M_DATABASE_PORT,
-    process.env.M_DATABASE_HOST,
-    process.env.M_DATABASE_USER,
-    process.env.M_DATABASE_PASSWORD,
-    process.env.M_DATABASE_NAME,
-    offset_time,
-    process.env.M_DATABASE_TIME_TO_CHECK,
-  );
-  cache = new Cache(process.env.REDIS_URL);
-}, offset_time);
+
+const mysqlConfig: DatabaseConfig = {
+  port: Number.parseInt(process.env.M_DATABASE_PORT ?? '3306'),
+  host: process.env.M_DATABASE_HOST ?? 'localhost',
+  user: process.env.M_DATABASE_USER ?? 'root',
+  password: process.env.M_DATABASE_PASSWORD ?? 'password',
+  database: process.env.M_DATABASE_NAME ?? 'main',
+  testTimer: Number.parseInt(process.env.M_DATABASE_TIME_TO_CHECK ?? '10000'),
+  idleTimeout: Number.parseInt(process.env.M_DATABASE_IDLE_TIMEOUT ?? '10000'),
+}
+const mysql = new MySQL(mysqlConfig, mysqlTables); 
+const mainDatabaseService = new DatabaseService(mysql);
+
+mainDatabaseService.connect(offsetDelay);
 
 
 const app = express();
+
+/*
 initial_config(app);
 
 // for logging purposes
-console.log('Node mode:', process.env.NODE_ENV ?? 'not set');
+
 
 // example of how to use the router
 app.use('/posts', router);
@@ -52,6 +63,7 @@ app.use('/image', upload);
 app.use('/auth', authRouter);
 
 // used '0.0.0.0' to use within docker, if not using docker, it is not needed
+*/
 const server = app.listen(
   Number.parseInt(process.env.PORT ?? '3000'),
   '0.0.0.0',
@@ -65,10 +77,6 @@ process.on('SIGTERM', () => {
   console.info('SIGTERM signal received.');
   console.log('Closing http server.');
   server.close((err) => {
-    mDatabase.close();
-
-    // redis kills itself automatically
     console.log('Http server closed.');
-    process.exit(err ? 1 : 0);
   });
 });

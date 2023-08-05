@@ -1,10 +1,10 @@
 import { createClient } from "redis";
 import { ApiError, ApiResponse } from "../common/api_response";
-import Database, { DatabaseConfig } from "../interfaces/Database";
-import DatabaseTable from "../interfaces/DatabaseTable";
+import Database, { DatabaseConfig } from "../interfaces/Database/Database";
+import DatabaseTable from "../interfaces/Database/DatabaseTable";
 import mysql, { Pool, ResultSetHeader, RowDataPacket } from 'mysql2';
 
-export default class MySQL implements Database {
+export default class Redis implements Database {
     private config: DatabaseConfig;
     private connection: any | undefined;
     private tables: DatabaseTable[];
