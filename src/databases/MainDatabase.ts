@@ -146,7 +146,7 @@ export default class M_Database {
   
         await this.connection.query(`USE ${database}`);
       } catch(error: unknown) {
-        dev_log(error);
+        console.error(error);
         return;
       }
     
@@ -163,6 +163,7 @@ export default class M_Database {
 
   async #checkConnection() {
     setInterval(() => {
+      if(!this.connection) return;
       this.#testConnection();
     }, this.timeToCheck);
   } 
