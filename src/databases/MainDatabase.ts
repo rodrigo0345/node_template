@@ -131,7 +131,6 @@ export default class M_Database {
           port: port,
           user: user,
           password: password,
-          database: database,
           idleTimeout: 5000,
         })
         .promise();
