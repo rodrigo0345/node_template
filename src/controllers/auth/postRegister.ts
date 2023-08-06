@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { ApiError, ApiSuccess } from '../../common/api_response';
 import { Role, userSchema } from '../../types/user';
-import { mDatabase } from '../../';
 import tables from '../../types/db';
 import { ResultSetHeader } from 'mysql2';
 import bcrypt from 'bcrypt';
 import dev_log from '../../common/dev_log';
+import ControllerConfigInterface from '../../interfaces/Controller/ControllerConfig';
 
 export default async function postRegister(req: Request, res: Response) {
   dev_log({ body: req.body });
@@ -53,3 +53,13 @@ export default async function postRegister(req: Request, res: Response) {
 
   return res.json(ApiSuccess<number>((result[0] as ResultSetHeader).insertId));
 }
+
+
+export const postRegisterConfig: ControllerConfigInterface = {
+  relativePath: '/auth/postRegister',
+  type: 'post',
+  middleware: (req: Request, res: Response, next: () => void) => {
+    next();
+  },
+  exec: postRegister
+};

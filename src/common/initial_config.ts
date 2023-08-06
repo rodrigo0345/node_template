@@ -14,6 +14,8 @@ import { getUserByEmail, getUserByID } from '../utils/AuthQueries';
 import { ApiError } from './api_response';
 import bcrypt from 'bcrypt';
 import dev_log from './dev_log';
+import ServerConfigInterface from '../interfaces/Server/ServerConfig';
+import ServerInterface from '../interfaces/Server/Server';
 
 export const rateLimiterUsingThirdParty = rateLimit({
   windowMs: 2 * 60 * 1000, // 2 minutes in milliseconds
@@ -43,18 +45,6 @@ export default function initial_config(app: Express) {
     }),
   );
   app.use(compression());
-
-  // used to send cookies from the client to the server
-  app.use(function (req, res, next) {
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept, Set-Cookie, Authorization, Access-Control-Allow-Credentials, X-CSRF-Token',
-    );
-    res.header('Access-Controll-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Credentials', 'true');
-
-    next();
-  });
 
   // express-session makes the login persist within the cookies
   app.use(

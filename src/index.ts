@@ -1,8 +1,6 @@
 import express from 'express';
 import initial_config from './common/initial_config';
-import M_Database from './databases/MainDatabase';
 import { router } from './routes/posts';
-import Cache from './databases/Cache';
 import dev_log from './common/dev_log';
 import { upload } from './routes/image';
 import { authRouter } from './routes/auth';
@@ -11,6 +9,12 @@ import { DatabaseConfig } from './interfaces/Database/Database';
 import { mysqlTables } from './types/db';
 import DatabaseService from './databases/DatabaseService';
 import { off } from 'process';
+import ExpressServer from './Server/ExpressServer';
+import ServerConfigInterface from './interfaces/Server/ServerConfig';
+import MiddlewareInterface from './interfaces/Server/Middleware';
+import cookieParser from 'cookie-parser';
+import Middleware from './Middleware/Middleware';
+import ServerInterface from './interfaces/Server/Server';
 
 /* 
     Here is the entry point of the application.
@@ -27,13 +31,7 @@ import { off } from 'process';
 
 console.log('Node mode:', process.env.NODE_ENV ?? 'not set');
 
-// the timeout is used to give the database and cache time to start
-export let mDatabase: M_Database;
-export let cache: Cache;
-
 const offsetDelay = Number.parseInt(process.env.M_DATABASE_OFFSET_TIME ?? '10000');
-
-
 const mysqlConfig: DatabaseConfig = {
   port: Number.parseInt(process.env.M_DATABASE_PORT ?? '3306'),
   host: process.env.M_DATABASE_HOST ?? 'localhost',
@@ -49,34 +47,27 @@ const mainDatabaseService = new DatabaseService(mysql);
 mainDatabaseService.connect(offsetDelay);
 
 
-const app = express();
+const cookieControlMiddleware: Middleware = new Middleware((req, res, next) => {
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Set-Cookie, Authorization, Access-Control-Allow-Credentials, X-CSRF-Token',
+  );
+  res.header('Access-Controll-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Credentials', 'true');
 
-/*
-initial_config(app);
-
-// for logging purposes
-
-
-// example of how to use the router
-app.use('/posts', router);
-app.use('/image', upload);
-app.use('/auth', authRouter);
-
-// used '0.0.0.0' to use within docker, if not using docker, it is not needed
-*/
-const server = app.listen(
-  Number.parseInt(process.env.PORT ?? '3000'),
-  '0.0.0.0',
-  () => {
-    console.log(`Server started on port ${process.env.PORT ?? 3000}`);
-  },
-);
-
-// node needs to be told to close the database connection when the process is terminated
-process.on('SIGTERM', () => {
-  console.info('SIGTERM signal received.');
-  console.log('Closing http server.');
-  server.close((err) => {
-    console.log('Http server closed.');
-  });
+  next();
 });
+
+const init: ServerConfigInterface = {
+  setup: (server: ServerInterface) => {
+    const app = server.getServer();
+    initial_config(app);
+  },
+  port: 3000,
+  host: 'localhost',
+  middlewares: [cookieControlMiddleware],
+}
+
+const expressServer: ExpressServer = new ExpressServer();
+expressServer.start(init);
+
