@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ApiError, ApiSuccess } from '../../common/api_response';
-import { Role, userSchema } from '../../types/user';
+import { Role, userSchema } from '../../types/post';
 import tables from '../../types/db';
 import { ResultSetHeader } from 'mysql2';
 import bcrypt from 'bcrypt';

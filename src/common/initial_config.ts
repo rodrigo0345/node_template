@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import session from 'express-session';
 import { Strategy } from 'passport-local';
-import { user } from '../types/user';
+import { user } from '../types/post';
 import { getUserByEmail, getUserByID } from '../utils/AuthQueries';
 import { ApiError } from './api_response';
 import bcrypt from 'bcrypt';

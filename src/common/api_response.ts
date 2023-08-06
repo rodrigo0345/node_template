@@ -1,15 +1,23 @@
 export type ApiResponse<T> =
-  | { status: 'success'; data: T; timestamp: Date }
-  | { status: 'error'; message: string; timestamp: Date };
+  | ApiSuccess<T>
+  | ApiError;
 
-export const ApiSuccess = <T>(data: T): ApiResponse<T> => ({
-  status: 'success',
-  data,
-  timestamp: new Date(),
-});
+export const ApiSuccess = <T>(data: T): ApiSuccess<T> => {
+  return {
+    status: 'success',
+    data,
+    timestamp: new Date(),
+  } as ApiSuccess<T>;
+};
 
-export const ApiError = (message: string): ApiResponse<null> => ({
-  status: 'error',
-  message,
-  timestamp: new Date(),
-});
+export const ApiError = (message: string): ApiError => {
+  const error: ApiError = {
+    status: 'error',
+    message,
+    timestamp: new Date(),
+  }
+  return error;
+};
+
+export type ApiSuccess<T> = { status: 'success'; data: T; timestamp: Date };
+export type ApiError = { status: 'error'; message: string; timestamp: Date };

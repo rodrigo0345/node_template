@@ -1,8 +1,11 @@
 /*
     Here, you can add the sql syntax to add new tables to the database. These will be rendered when the main database instance starts 
+
+    Use RowDataPacket[] for SELECT statements, while using ResultSetHeader when using UPDATE, INSERT and DELETE queries. The latter contains affectedRows and lastInsertId properties.
 */
 
 import DatabaseTable from "../interfaces/Database/DatabaseTable";
+
 
 export const mysqlTables: DatabaseTable[] = [
   {
