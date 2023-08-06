@@ -15,6 +15,8 @@ import MiddlewareInterface from './interfaces/Server/Middleware';
 import cookieParser from 'cookie-parser';
 import Middleware from './Middleware/Middleware';
 import ServerInterface from './interfaces/Server/Server';
+import  { authConfig } from './controllers/auth/Auth';
+import Controller from './controllers/Controller';
 
 /* 
     Here is the entry point of the application.
@@ -58,16 +60,22 @@ const cookieControlMiddleware: Middleware = new Middleware((req, res, next) => {
   next();
 });
 
+
+
+export const expressServer: ExpressServer = new ExpressServer();
+
+// controllers
+const authController = new Controller(expressServer, authConfig);
+
 const init: ServerConfigInterface = {
   setup: (server: ServerInterface) => {
-    const app = server.getServer();
-    initial_config(app);
+    initial_config(server.getServer());
   },
-  port: 3000,
-  host: 'localhost',
+  port: process.env.PORT ? Number.parseInt(process.env.PORT) : 8000,
+  host: '0.0.0.0',
   middlewares: [cookieControlMiddleware],
-}
+  controllers: [authController],
+};
 
-const expressServer: ExpressServer = new ExpressServer();
 expressServer.start(init);
 

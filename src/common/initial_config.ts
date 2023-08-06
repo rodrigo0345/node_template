@@ -9,7 +9,6 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import session from 'express-session';
 import { Strategy } from 'passport-local';
-import { user } from '../types/post';
 import { getUserByEmail, getUserByID } from '../utils/AuthQueries';
 import { ApiError } from './api_response';
 import bcrypt from 'bcrypt';
@@ -63,7 +62,7 @@ export default function initial_config(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  passport.use(
+  /*passport.use(
     new Strategy(async function (username, password, done) {
       let user: user | undefined = undefined;
 
@@ -122,5 +121,5 @@ export default function initial_config(app: Express) {
     process.nextTick(function () {
       done(null, userObj);
     });
-  });
+  });*/
 }
