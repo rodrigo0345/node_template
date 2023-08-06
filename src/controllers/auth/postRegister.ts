@@ -1,21 +1,10 @@
 import { Request, Response } from 'express';
 import { ApiError, ApiSuccess } from '../../common/api_response';
-import { ResultSetHeader } from 'mysql2';
 import bcrypt from 'bcrypt';
 import dev_log from '../../common/dev_log';
-import ControllerConfigInterface from '../../interfaces/Controller/ControllerConfig';
 import User from '../../types/user';
 import { AVAILABLE_DATABASE_SERVICES } from '../..';
 
-
-export const postRegisterConfig: ControllerConfigInterface = {
-  relativePath: '/auth/postRegister',
-  type: 'post',
-  middleware: (req: Request, res: Response, next: () => void) => {
-    next();
-  },
-  exec: postRegister
-};
 
 export default async function postRegister(req: Request, res: Response) {
   dev_log({ body: req.body });
@@ -55,6 +44,8 @@ export default async function postRegister(req: Request, res: Response) {
     email,
     password: hashedPassword,
   });
+
+  console.log("result", result);
 
 
   if (result.status === 'error') {

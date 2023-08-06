@@ -29,6 +29,11 @@ export default class ExpressServer implements ServerInterface {
         });
     }
     stop(): void {
-        this.server.close();
+        /*
+        this.server.close((err: any) => {
+            console.log('server closed')
+            process.exit(err ? 1 : 0)
+        });
+        */
     }
 }

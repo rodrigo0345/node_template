@@ -44,7 +44,7 @@ export default class MySQL implements Database {
     }
     
     async execute(callback: (connection: any) => unknown): Promise<mysql.OkPacketParams | mysql.ResultSetHeader | mysql.RowDataPacket | mysql.RowDataPacket[] |  ApiResponse<null>> {
-        if(!this.connection) return ApiError('Redis not connected') as ApiResponse<null>;
+        if(!this.connection) return ApiError('MySQL not connected') as ApiResponse<null>;
         try {
             // This can return way too much stuff
             return await callback(this.connection) as any;
@@ -93,7 +93,7 @@ export default class MySQL implements Database {
     private async recursiveTesting() {
         setInterval(async () => {
             if(!this.connection) return;
-            if(await this.test()) this.connection = undefined;
+            if(!await this.test()) this.connection = undefined;
         }, this.config.testTimer);
     }
 

@@ -14,6 +14,7 @@ import ServerInterface from './interfaces/Server/Server';
 import  { authConfig } from './controllers/auth/Auth';
 import Controller from './controllers/Controller';
 import DatabaseServiceImpl from './interfaces/Database/DatabaseServiceImpl';
+import dev_log from './common/dev_log';
 
 /* 
     Here is the entry point of the application.
@@ -29,6 +30,18 @@ import DatabaseServiceImpl from './interfaces/Database/DatabaseServiceImpl';
 */
 
 console.log('Node mode:', process.env.NODE_ENV ?? 'not set');
+
+dev_log(
+  'Environment variables:',
+  process.env.M_DATABASE_HOST,
+  process.env.M_DATABASE_USER,
+  process.env.M_DATABASE_PASSWORD,
+  process.env.M_DATABASE_NAME,
+  process.env.M_DATABASE_PORT,
+  process.env.M_DATABASE_TIME_TO_CHECK,
+  process.env.M_DATABASE_IDLE_TIMEOUT,
+  process.env.M_DATABASE_OFFSET_TIME,
+);
 
 const offsetDelay = Number.parseInt(process.env.M_DATABASE_OFFSET_TIME ?? '10000');
 const mysqlConfig: DatabaseConfig = {

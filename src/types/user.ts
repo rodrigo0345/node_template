@@ -94,6 +94,15 @@ export default class User implements DatabaseTableImpl<UserType> {
     }) as ApiResponse<UserType>;
   }
 
+  async getOneByEmail(email: string): Promise<ApiResponse<UserType>> {
+    if(!this.database) throw new Error('Database not attached');
+    return await this.database?.query(async (connection) => {
+      const [rows] = await connection.query(`SELECT * FROM ${User.table.name} WHERE email = ?;`, [email]);
+      const data = ((rows as RowDataPacket[])[0] as UserType);
+      return ApiSuccess<UserType>(data); 
+    }) as ApiResponse<UserType>;
+  }
+
   async getAll(where: string): Promise<ApiResponse<UserType[]>> {
     if(!this.database) throw new Error('Database not attached');
     return await this.database?.query(async (connection) => {

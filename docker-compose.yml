@@ -52,8 +52,6 @@ services:
       MYSQL_DATABASE: ${M_DATABASE_NAME}
       MYSQL_ROOT_HOST: '%'
     command: --bind-address=0.0.0.0
-    volumes:
-      - db:/var/lib/mysql
     ports:
       - '3306:3306'
     networks:

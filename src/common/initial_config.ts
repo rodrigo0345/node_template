@@ -9,12 +9,14 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import session from 'express-session';
 import { Strategy } from 'passport-local';
-import { getUserByEmail, getUserByID } from '../utils/AuthQueries';
 import { ApiError } from './api_response';
 import bcrypt from 'bcrypt';
 import dev_log from './dev_log';
 import ServerConfigInterface from '../interfaces/Server/ServerConfig';
 import ServerInterface from '../interfaces/Server/Server';
+import User, { UserType } from '../types/user';
+import { AVAILABLE_DATABASE_SERVICES } from '..';
+import { z } from 'zod';
 
 export const rateLimiterUsingThirdParty = rateLimit({
   windowMs: 2 * 60 * 1000, // 2 minutes in milliseconds
@@ -62,34 +64,49 @@ export default function initial_config(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  /*passport.use(
+  passport.use(
     new Strategy(async function (username, password, done) {
-      let user: user | undefined = undefined;
+      if (!AVAILABLE_DATABASE_SERVICES.main) {
+        return done(JSON.stringify(ApiError('Database service not available')));
+      }
+      const userTable = new User(AVAILABLE_DATABASE_SERVICES.main);
 
       try {
-        const result = await getUserByEmail(username);
-        dev_log({ result });
+        z.string().email().parse(username);
+
+        dev_log({ username, password })
+
+        const result = await userTable.getOneByEmail(username);
+
+        dev_log({result});
 
         if (!result) {
-          return done(JSON.stringify(ApiError('User not found')));
+          return done(JSON.stringify(ApiError("Strategy Error:" + 'User not found')));
         }
 
-        if ((result as any).status === 'error') {
-          return done(JSON.stringify(ApiError(result.message)));
+        if (result.status === 'error') {
+          return done(JSON.stringify(result.message));
         }
-        user = {
-          id: (result as user).id,
-          name: (result as user).name,
-          email: (result as user).email,
-          role: (result as user).role,
-          password: (result as user).password,
+
+        if(!result.data) {
+          return done(JSON.stringify(ApiError("Strategy Error:" + 'User not found')));
+        }
+
+        let user: UserType = {
+          id: result.data.id,
+          name: result.data.name,
+          email: result.data.email,
+          role: result.data.role,
+          password: result.data.password,
         };
+
+        dev_log({ password, stored: user.password })
         if (!bcrypt.compareSync(password, user.password)) {
-          return done(JSON.stringify(ApiError('Incorrect password')));
+          return done(JSON.stringify(ApiError("Strategy Error:" + 'Incorrect password')));
         }
         return done(null, user);
       } catch (error: any) {
-        return done(JSON.stringify(ApiError(error.message)));
+        return done(JSON.stringify(ApiError("Strategy Error:" + error.message)));
       }
     }),
   );
@@ -101,25 +118,35 @@ export default function initial_config(app: Express) {
   });
 
   passport.deserializeUser(async function (user: any, done: any) {
-    let userObj: user | undefined = undefined;
+    if (!AVAILABLE_DATABASE_SERVICES.main) {
+      return done(JSON.stringify(ApiError('Database service not available')));
+    }
+    const userTable = new User(AVAILABLE_DATABASE_SERVICES.main);
 
+    let userObj: UserType;
     try {
-      const result = await getUserByID(user.id);
-      if ((result as any).status === 'error') {
-        return done(JSON.stringify(ApiError((result as any).message)));
+      const result = await userTable.getOneByEmail(user.email);
+      dev_log({result, user});
+
+      if (result.status === 'error') {
+        return done(JSON.stringify(result.message));
       }
+      if(!result.data) {
+        return done(JSON.stringify(ApiError("Deserializing Error:" + ' User not found')));
+      }
+
       userObj = {
-        id: (result as user).id,
-        name: (result as user).name,
-        email: (result as user).email,
-        role: (result as user).role,
-        password: (result as user).password,
+        id: result.data.id,
+        name: result.data.name,
+        email: result.data.email,
+        role: result.data.role,
+        password: result.data.password,
       };
     } catch (error: any) {
-      return done(JSON.stringify(ApiError(error.message)));
+      return done(JSON.stringify(ApiError("Deserializing Error:" + error.message)));
     }
     process.nextTick(function () {
       done(null, userObj);
     });
-  });*/
+  });
 }
