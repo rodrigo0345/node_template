@@ -3,6 +3,7 @@ import DatabaseService from "../../databases/DatabaseService";
 import DatabaseTable from "./DatabaseTable";
 
 export default interface DatabaseTableImpl<T> {
+    getName(): string;
     setDatabase(database: DatabaseService): void;
     getOne(where: string): Promise<ApiResponse<T>>
     getAll(where: string): Promise<ApiResponse<T[]>>

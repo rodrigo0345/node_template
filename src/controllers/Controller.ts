@@ -3,6 +3,8 @@ import ControllerInterface from "../interfaces/Controller/Controller";
 import ControllerConfigInterface from "../interfaces/Controller/ControllerConfig";
 import ServerInterface from "../interfaces/Server/Server";
 import dev_log from "../common/dev_log";
+import DatabaseService from "../databases/DatabaseService";
+import DatabaseTableImpl from "../interfaces/Database/DatabaseTableImple";
 
 export default class Controller implements ControllerInterface {
     private router: Router;
@@ -25,6 +27,7 @@ export default class Controller implements ControllerInterface {
         if(!this.config) throw new Error("Auth Controller: Config not set");
 
         this.config.forEach((config: ControllerConfigInterface) => {
+            config.exec = config.exec.bind(config);
             switch(config.type) {
                 case "get":
                     this.router.get(config.relativePath, config.middleware? config.middleware: (req, res, next) => {next()} ,config.exec);

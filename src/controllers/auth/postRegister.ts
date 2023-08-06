@@ -1,23 +1,38 @@
 import { Request, Response } from 'express';
 import { ApiError, ApiSuccess } from '../../common/api_response';
-import tables from '../../types/db';
 import { ResultSetHeader } from 'mysql2';
 import bcrypt from 'bcrypt';
 import dev_log from '../../common/dev_log';
 import ControllerConfigInterface from '../../interfaces/Controller/ControllerConfig';
+import User from '../../types/user';
+import { AVAILABLE_DATABASE_SERVICES } from '../..';
 
-/*
+
+export const postRegisterConfig: ControllerConfigInterface = {
+  relativePath: '/auth/postRegister',
+  type: 'post',
+  middleware: (req: Request, res: Response, next: () => void) => {
+    next();
+  },
+  exec: postRegister
+};
+
 export default async function postRegister(req: Request, res: Response) {
   dev_log({ body: req.body });
   const { username, password, name, role } = req.body;
   const email = username;
+
+  if(!AVAILABLE_DATABASE_SERVICES.main) {
+    return res.status(500).json(ApiError('Database service not available'));
+  }
+  const userTable = new User(AVAILABLE_DATABASE_SERVICES.main);
 
   if (!email || !password || !name || !role) {
     return res.status(400).json(ApiError('Missing required fields'));
   }
 
   try {
-    userSchema.parse({
+    User.type.parse({
       email,
       password,
       name,
@@ -34,33 +49,20 @@ export default async function postRegister(req: Request, res: Response) {
     return res.status(500).json(ApiError(err.message));
   }
 
-  const sqlCommand = tables.find(
-    (table) => table.name === 'users',
-  )?.insertTable;
-
-  const result = await mDatabase.exec(async (connection) => {
-    return await connection.query(sqlCommand, [
-      name,
-      role,
-      email,
-      hashedPassword,
-    ]);
+  const result = await userTable.insertOne({
+    name,
+    role,
+    email,
+    password: hashedPassword,
   });
+
 
   if (result.status === 'error') {
     return res.status(500).json(result);
   }
 
-  return res.json(ApiSuccess<number>((result[0] as ResultSetHeader).insertId));
+  return res.json(result);
 }
 
 
-export const postRegisterConfig: ControllerConfigInterface = {
-  relativePath: '/auth/postRegister',
-  type: 'post',
-  middleware: (req: Request, res: Response, next: () => void) => {
-    next();
-  },
-  exec: postRegister
-};
-*/
+

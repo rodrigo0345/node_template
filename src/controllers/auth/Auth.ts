@@ -1,16 +1,17 @@
-import { expressServer } from "../..";
 import ControllerConfigInterface from "../../interfaces/Controller/ControllerConfig";
 import Controller from "../Controller"
+import getUser from "./getUser";
+import postRegister from "./postRegister";
 
 export const authConfig: ControllerConfigInterface[] = [
     {
         relativePath: "/auth/login",
         type: "post",
-        exec: (req, res) => { res.send("login");}
+        exec: getUser
     },
     {
         relativePath: "/auth/register",
         type: "post",
-        exec: (req, res) => { res.send("register");}
+        exec: postRegister
     },
 ]

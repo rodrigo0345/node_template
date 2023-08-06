@@ -11,6 +11,7 @@ import DatabaseTableImpl from "../interfaces/Database/DatabaseTableImple";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { ApiError, ApiResponse, ApiSuccess } from "../common/api_response";
 import { table } from "console";
+import DatabaseServiceImpl from '../interfaces/Database/DatabaseServiceImpl';
 
 export type post = {
   id?: number;
@@ -22,7 +23,7 @@ export type post = {
 export type PostType = z.infer<typeof Post.type>;
 
 export default class Post implements DatabaseTableImpl<PostType> {
-  private database: DatabaseService | null = null;
+  private database: DatabaseServiceImpl | null = null;
 
   static table : DatabaseTable = {
     name: 'posts',
@@ -44,12 +45,16 @@ export default class Post implements DatabaseTableImpl<PostType> {
     author: z.string().email(),
   });
 
-  constructor(database: DatabaseService) {
+  constructor(database: DatabaseServiceImpl) {
     this.database = database;
   }
 
-  setDatabase(database: DatabaseService): void {
+  setDatabase(database: DatabaseServiceImpl): void {
     this.database = database;
+  }
+
+  getName(): string {
+    return Post.table.name;
   }
 
   async insertOne(data: PostType): Promise<ApiResponse<number>> {

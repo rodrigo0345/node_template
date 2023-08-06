@@ -11,6 +11,7 @@ import DatabaseTableImpl from "../interfaces/Database/DatabaseTableImple";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { ApiError, ApiResponse, ApiSuccess } from "../common/api_response";
 import { table } from "console";
+import DatabaseServiceImpl from "../interfaces/Database/DatabaseServiceImpl";
 
 export type post = {
   id?: number;
@@ -27,7 +28,7 @@ export enum Role {
 };
 
 export default class User implements DatabaseTableImpl<UserType> {
-  private database: DatabaseService | null = null;
+  private database: DatabaseServiceImpl | null = null;
 
   static table : DatabaseTable = {
     name: 'users',
@@ -52,12 +53,16 @@ export default class User implements DatabaseTableImpl<UserType> {
     email: z.string().email(),
   });
 
-  constructor(database: DatabaseService) {
+  constructor(database: DatabaseServiceImpl) {
     this.database = database;
   }
 
   setDatabase(database: DatabaseService): void {
     this.database = database;
+  }
+
+  getName(): string {
+    return User.table.name;
   }
 
   async insertOne(data: UserType): Promise<ApiResponse<number>> {

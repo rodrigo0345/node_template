@@ -1,12 +1,8 @@
 import express from 'express';
 import initial_config from './common/initial_config';
-import { router } from './routes/posts';
-import dev_log from './common/dev_log';
-import { upload } from './routes/image';
-import { authRouter } from './routes/auth';
 import MySQL from './databases/MySQL';
 import { DatabaseConfig } from './interfaces/Database/Database';
-import { mysqlTables } from './types/db';
+import { getActiveTables, getTablesDefinition } from './types/db';
 import DatabaseService from './databases/DatabaseService';
 import { off } from 'process';
 import ExpressServer from './Server/ExpressServer';
@@ -17,6 +13,7 @@ import Middleware from './Middleware/Middleware';
 import ServerInterface from './interfaces/Server/Server';
 import  { authConfig } from './controllers/auth/Auth';
 import Controller from './controllers/Controller';
+import DatabaseServiceImpl from './interfaces/Database/DatabaseServiceImpl';
 
 /* 
     Here is the entry point of the application.
@@ -43,11 +40,18 @@ const mysqlConfig: DatabaseConfig = {
   testTimer: Number.parseInt(process.env.M_DATABASE_TIME_TO_CHECK ?? '10000'),
   idleTimeout: Number.parseInt(process.env.M_DATABASE_IDLE_TIMEOUT ?? '10000'),
 }
+
+const mysqlTables = getTablesDefinition();
 const mysql = new MySQL(mysqlConfig, mysqlTables); 
 const mainDatabaseService = new DatabaseService(mysql);
 
-mainDatabaseService.connect(offsetDelay);
 
+export const AVAILABLE_DATABASE_SERVICES: {
+  main: DatabaseServiceImpl | null,
+  cache: DatabaseServiceImpl | null,
+} = {main: mainDatabaseService, cache: null};
+
+mainDatabaseService.connect(offsetDelay);
 
 const cookieControlMiddleware: Middleware = new Middleware((req, res, next) => {
   res.header(
@@ -60,12 +64,10 @@ const cookieControlMiddleware: Middleware = new Middleware((req, res, next) => {
   next();
 });
 
-
-
-export const expressServer: ExpressServer = new ExpressServer();
+export const EXPRESS_SERVER: ExpressServer = new ExpressServer();
 
 // controllers
-const authController = new Controller(expressServer, authConfig);
+const authController = new Controller(EXPRESS_SERVER, authConfig);
 
 const init: ServerConfigInterface = {
   setup: (server: ServerInterface) => {
@@ -77,5 +79,5 @@ const init: ServerConfigInterface = {
   controllers: [authController],
 };
 
-expressServer.start(init);
+EXPRESS_SERVER.start(init);
 

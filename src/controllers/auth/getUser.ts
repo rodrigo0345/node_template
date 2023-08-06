@@ -10,8 +10,5 @@ export default function getUser(req: Request, res: Response) {
 export const getUserConfig: ControllerConfigInterface = {
   relativePath: '/auth/getUser',
   type: 'get',
-  middleware: (req: Request, res: Response, next: () => void) => {
-    next();
-  },
   exec: getUser
 };
