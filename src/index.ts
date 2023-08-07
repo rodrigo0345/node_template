@@ -4,11 +4,8 @@ import MySQL from './Databases/MySQL';
 import { DatabaseConfig } from './Interfaces/Database/Database';
 import { getActiveTables, getTablesDefinition } from './Types/db';
 import DatabaseService from './Databases/DatabaseService';
-import { off } from 'process';
 import ExpressServer from './Server/ExpressServer';
 import ServerConfigInterface from './Interfaces/Server/ServerConfig';
-import MiddlewareInterface from './Interfaces/Server/Middleware';
-import cookieParser from 'cookie-parser';
 import Middleware from './Middleware/Middleware';
 import ServerInterface from './Interfaces/Server/Server';
 import  { authConfig } from './controllers/auth/Auth';
@@ -17,6 +14,7 @@ import DatabaseServiceImpl from './Interfaces/Database/DatabaseServiceInterface'
 import dev_log from './common/DevLog';
 import { imageConfig } from './controllers/image/Image';
 import Redis from './Databases/Redis';
+import Cache from './Types/cache';
 
 /* 
     Here is the entry point of the application.
@@ -77,7 +75,7 @@ const cacheService = new DatabaseService(redis);
 export const AVAILABLE_DATABASE_SERVICES: {
   main: DatabaseServiceImpl | null,
   cache: DatabaseServiceImpl | null,
-} = {main: mainDatabaseService, cache: null};
+} = {main: mainDatabaseService, cache: cacheService};
 
 // Spin up all the databases
 mainDatabaseService.connect(offsetDelay);

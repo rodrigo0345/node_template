@@ -2,7 +2,6 @@ import { createClient } from "redis";
 import { ApiError, ApiResponse } from "../common/ApiResponse";
 import Database, { DatabaseConfig } from "../Interfaces/Database/Database";
 import DatabaseTable from "../Interfaces/Database/DatabaseTable";
-import mysql, { Pool, ResultSetHeader, RowDataPacket } from 'mysql2';
 
 export default class Redis implements Database {
     private config: DatabaseConfig;
@@ -42,7 +41,7 @@ export default class Redis implements Database {
         this.connection.quit();
     }
     
-    async execute(callback: (connection: any) => unknown): Promise<mysql.OkPacketParams | mysql.ResultSetHeader | mysql.RowDataPacket | mysql.RowDataPacket[] |  ApiResponse<null>> {
+    async execute(callback: (connection: any) => unknown): Promise<unknown> {
         if(!this.connection) return ApiError('Redis not connected') as ApiError;
         try {
             // This can return way too much stuff

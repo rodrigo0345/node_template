@@ -1,27 +1,42 @@
 import mysql from 'mysql2';
-import { mDatabase, cache } from '../..';
+import { AVAILABLE_DATABASE_SERVICES } from '../..';
 import { Request, Response } from 'express';
+import Cache from '../../Types/cache';
+import Post, { PostType } from '../../Types/post';
 
 export default async function getPosts(req: Request, res: Response) {
-  const result = await mDatabase.exec(async (connection) => {
-    // check cache
-    const cached = await cache.get('g_posts');
+  if(!AVAILABLE_DATABASE_SERVICES.main) {
+    return res.status(500).json({ status: 'error', message: 'Database service not available' });
+  }
+  const postTable = new Post(AVAILABLE_DATABASE_SERVICES.main);
 
-    if (typeof cached === 'string') return cached;
+  let cache: Cache | null = null;
+  if(AVAILABLE_DATABASE_SERVICES.cache) {
+    cache = new Cache(AVAILABLE_DATABASE_SERVICES.cache);
+  }
+  
+  // check cache
+  const cachedPostsKey = 'g_posts';
+  const cached = cache? await cache?.get<PostType, Post>(cachedPostsKey, postTable): null;
 
-    // if not in cache, get from database
-    const [rows] = await connection.query('SELECT * FROM posts');
+  if(cached) {
+    return res.json(cached);
+  }
 
-    const result: mysql.RowDataPacket[] = rows as mysql.RowDataPacket[];
-
-    // save to cache
-    await cache.save('g_posts', result);
-
-    return result;
-  });
+  // if not in cache, get from database
+  const result = await postTable.getAll("");
 
   if (result.status === 'error') {
     return res.status(500).json(result);
+  }
+
+  if (!result.data) {
+    return res.json([]);
+  }
+
+  // set cache
+  if(cache) {
+    await cache?.save("g_posts", result.data, 1000)
   }
 
   return res.json(result);

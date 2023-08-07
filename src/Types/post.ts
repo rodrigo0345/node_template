@@ -13,13 +13,6 @@ import { ApiError, ApiResponse, ApiSuccess } from "../common/ApiResponse";
 import { table } from "console";
 import DatabaseServiceImpl from '../Interfaces/Database/DatabaseServiceInterface';
 
-export type post = {
-  id?: number;
-  title: string;
-  content: string;
-  author: string;
-};
-
 export type PostType = z.infer<typeof Post.type>;
 
 export default class Post implements DatabaseTableInterface<PostType> {
@@ -44,6 +37,8 @@ export default class Post implements DatabaseTableInterface<PostType> {
     content: z.string().min(4),
     author: z.string().email(),
   });
+
+  typeInst = Post.type;
 
   constructor(database: DatabaseServiceImpl) {
     this.database = database;

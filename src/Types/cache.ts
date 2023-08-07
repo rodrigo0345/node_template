@@ -1,43 +1,50 @@
 import DatabaseService from "../Databases/DatabaseService";
+import CacheInterface from "../Interfaces/Database/CacheInterface";
+import DatabaseServiceInterface from "../Interfaces/Database/DatabaseServiceInterface";
 import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceInterface";
+import DatabaseTableInterface from "../Interfaces/Database/DatabaseTableInterface";
 import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableInterface";
-import { ApiResponse } from "../common/ApiResponse";
+import { ApiError, ApiResponse, ApiSuccess } from "../common/ApiResponse";
 
 
 // this is the weirder DatabaseTableImpl but it is needed to maintain the type safety
-export default class Cache implements DatabaseTableImpl<string> {
-    private database: DatabaseServiceImpl | null = null;
-    
-    getName(): string {
-        return "cache";
-    }
-    setDatabase(database: DatabaseService): void {
+export default class Cache implements CacheInterface {
+    private readonly database: DatabaseServiceInterface;
+    constructor(database: DatabaseServiceInterface) {
         this.database = database;
     }
-    async getOne(where: string): Promise<ApiResponse<string>> {
-        if (this.redis_url === undefined || !this.connection) return false;
-        try {
-            const obj = await this.connection.get(key);
-            return obj ? JSON.parse(obj) : undefined;
-        } catch (error: any) {
-            dev_log(error);
-            return ApiError(error.message);
-        }
-    }
-    getAll(where: string): Promise<ApiResponse<string[]>> {
-        throw new Error("Method not implemented.");
-    }
-    insertOne(data: string): Promise<ApiResponse<number>> {
-        throw new Error("Method not implemented.");
-    }
-    insertMany(data: string[]): Promise<ApiResponse<number[]>> {
-        throw new Error("Method not implemented.");
-    }
-    updateOne(where: string, data: string): Promise<ApiResponse<number>> {
-        throw new Error("Method not implemented.");
-    }
-    deleteOne(where: string, data: string): Promise<ApiResponse<string>> {
-        throw new Error("Method not implemented.");
-    }
+    async get<T, Y extends DatabaseTableInterface<any>>(key: string, model: Y): Promise<ApiResponse<T>> {
+        const result = await this.database.query(async (connection) => {
+            const result = await connection.get(key);
+            return ApiSuccess<string>(result);
+        }) as ApiResponse<string>;
 
+        if(result.status === "error") return result;
+        const data: T = JSON.parse(result.data);
+
+        try{
+            model.typeInst.parse(data);
+        } catch(err: any){
+            return ApiError("Redis Error: " + err.message);
+        }
+        
+        return ApiSuccess<T>(data);
+    }
+    async save(key: string, data: unknown, timeout: number): Promise<ApiResponse<boolean>> {
+        const result = await this.database.query(async (connection) => {
+            const stringifiedData = JSON.stringify(data);
+            const result = await connection.set(key, data, timeout);
+            return ApiSuccess<boolean>(true);
+        }) as ApiResponse<unknown>;
+        if(result.status === 'success') return ApiSuccess<boolean>(true);
+        else return ApiSuccess<boolean>(false);
+    }
+    async delete(key: string): Promise<ApiResponse<boolean>> {
+        const result = await this.database.query(async (connection) => {
+            const result = await connection.delete(key);
+            return ApiSuccess<boolean>(true);
+        }) as ApiResponse<unknown>;
+        if(result.status === 'success') return ApiSuccess<boolean>(true);
+        else return ApiSuccess<boolean>(false);
+    }
 }

@@ -51,6 +51,7 @@ export default class User implements DatabaseTableInterface<UserType> {
     password: z.string().min(4),
     email: z.string().email(),
   });
+  typeInst = User.type;
 
   constructor(database: DatabaseServiceImpl) {
     this.database = database;

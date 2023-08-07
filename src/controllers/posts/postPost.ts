@@ -1,9 +1,10 @@
-import { cache, mDatabase } from '../..';
+import { AVAILABLE_DATABASE_SERVICES } from '../..';
 import { Request, Response } from 'express';
-import tables from '../../Types/db';
-import { ApiSuccess } from '../../common/ApiResponse';
+import { ApiError, ApiSuccess } from '../../common/ApiResponse';
 import { ResultSetHeader } from 'mysql2';
 import dev_log from '../../common/DevLog';
+import Post from '../../Types/post';
+import Cache from '../../Types/cache';
 
 export default async function postPost(req: Request, res: Response) {
   const { title, content } = req.body;
@@ -14,11 +15,25 @@ export default async function postPost(req: Request, res: Response) {
     author = (req.user as any).email;
   }
 
-  const result = await mDatabase.exec(async (connection) => {
-    return await connection.query(
-      tables.find((entity) => entity.name === 'posts')?.insertTable,
-      [title, content, author],
-    );
+  if(!AVAILABLE_DATABASE_SERVICES.main) {
+    return res.status(500).json(ApiError('Database service not available'));
+  }
+
+  try{
+    Post.type.parse({
+      title,
+      content,
+      author,
+    });
+  } catch(err: any) {
+    return res.status(400).json(ApiError(err.message));
+  }
+  const postTable = new Post(AVAILABLE_DATABASE_SERVICES.main);
+
+  const result = await postTable.insertOne({
+    title,
+    content,
+    author,
   });
 
   dev_log({ result });
@@ -28,11 +43,12 @@ export default async function postPost(req: Request, res: Response) {
   }
 
   // clean cache
-  await cache.delete('g_posts');
+  let cache: Cache | null = null;
+  if(AVAILABLE_DATABASE_SERVICES.cache) {
+    cache = new Cache(AVAILABLE_DATABASE_SERVICES.cache);
+  }
+ 
+  cache? await cache.delete('g_posts'): void 0;
 
-  const [data] = result;
-  dev_log({ data });
-
-  const resp = ApiSuccess<number>((data as ResultSetHeader).insertId);
-  return res.json(resp);
+  return res.json(ApiSuccess<number>(result.data));
 }

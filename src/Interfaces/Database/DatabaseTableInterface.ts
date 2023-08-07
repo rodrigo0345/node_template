@@ -1,8 +1,10 @@
+import { z } from "zod";
 import { ApiResponse } from "../../common/ApiResponse";
 import DatabaseService from "../../Databases/DatabaseService";
 import DatabaseTable from "./DatabaseTable";
 
 export default interface DatabaseTableInterface<T> {
+    typeInst: z.ZodType<T>;
     getName(): string;
     setDatabase(database: DatabaseService): void;
     getOne(where: string): Promise<ApiResponse<T>>
