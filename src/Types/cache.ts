@@ -1,6 +1,6 @@
 import DatabaseService from "../Databases/DatabaseService";
-import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceImpl";
-import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableImple";
+import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceInterface";
+import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableInterface";
 import { ApiResponse } from "../common/ApiResponse";
 
 

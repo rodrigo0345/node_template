@@ -4,7 +4,7 @@ import ControllerConfigInterface from "../Interfaces/Controller/ControllerConfig
 import ServerInterface from "../Interfaces/Server/Server";
 import dev_log from "../common/DevLog";
 import DatabaseService from "../Databases/DatabaseService";
-import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableImple";
+import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableInterface";
 
 export default class Controller implements ControllerInterface {
     private router: Router;

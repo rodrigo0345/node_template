@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import DatabaseTableImpl from '../Database/DatabaseTableImple';
+import DatabaseTableImpl from '../Database/DatabaseTableInterface';
 
 export default interface ControllerConfigInterface {
     relativePath: string;

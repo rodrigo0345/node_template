@@ -7,11 +7,10 @@
 import { z } from "zod";
 import DatabaseService from "../Databases/DatabaseService";
 import DatabaseTable from "../Interfaces/Database/DatabaseTable";
-import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableImple";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { ApiError, ApiResponse, ApiSuccess } from "../common/ApiResponse";
-import { table } from "console";
-import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceImpl";
+import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceInterface";
+import DatabaseTableInterface from "../Interfaces/Database/DatabaseTableInterface";
 
 export type post = {
   id?: number;
@@ -27,7 +26,7 @@ export enum Role {
   User = 'user',
 };
 
-export default class User implements DatabaseTableImpl<UserType> {
+export default class User implements DatabaseTableInterface<UserType> {
   private database: DatabaseServiceImpl | null = null;
 
   static table : DatabaseTable = {

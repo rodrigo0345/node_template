@@ -1,8 +1,8 @@
 import Database, { DatabaseConfig } from "../Interfaces/Database/Database";
-import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceImpl";
+import DatabaseServiceInterface from "../Interfaces/Database/DatabaseServiceInterface";
 import DatabaseTable from "../Interfaces/Database/DatabaseTable";
 
-export default class DatabaseService implements DatabaseServiceImpl {
+export default class DatabaseService implements DatabaseServiceInterface {
     private database: Database;
     
     constructor(database: Database){

@@ -13,7 +13,7 @@ import Middleware from './Middleware/Middleware';
 import ServerInterface from './Interfaces/Server/Server';
 import  { authConfig } from './controllers/auth/Auth';
 import Controller from './controllers/Controller';
-import DatabaseServiceImpl from './Interfaces/Database/DatabaseServiceImpl';
+import DatabaseServiceImpl from './Interfaces/Database/DatabaseServiceInterface';
 import dev_log from './common/DevLog';
 import { imageConfig } from './controllers/image/Image';
 import Redis from './Databases/Redis';

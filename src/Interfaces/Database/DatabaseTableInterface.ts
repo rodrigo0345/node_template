@@ -2,7 +2,7 @@ import { ApiResponse } from "../../common/ApiResponse";
 import DatabaseService from "../../Databases/DatabaseService";
 import DatabaseTable from "./DatabaseTable";
 
-export default interface DatabaseTableImpl<T> {
+export default interface DatabaseTableInterface<T> {
     getName(): string;
     setDatabase(database: DatabaseService): void;
     getOne(where: string): Promise<ApiResponse<T>>

@@ -7,11 +7,11 @@
 import { z } from 'zod';
 import DatabaseService from "../Databases/DatabaseService";
 import DatabaseTable from "../Interfaces/Database/DatabaseTable";
-import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableImple";
+import DatabaseTableInterface from "../Interfaces/Database/DatabaseTableInterface";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { ApiError, ApiResponse, ApiSuccess } from "../common/ApiResponse";
 import { table } from "console";
-import DatabaseServiceImpl from '../Interfaces/Database/DatabaseServiceImpl';
+import DatabaseServiceImpl from '../Interfaces/Database/DatabaseServiceInterface';
 
 export type post = {
   id?: number;
@@ -22,7 +22,7 @@ export type post = {
 
 export type PostType = z.infer<typeof Post.type>;
 
-export default class Post implements DatabaseTableImpl<PostType> {
+export default class Post implements DatabaseTableInterface<PostType> {
   private database: DatabaseServiceImpl | null = null;
 
   static table : DatabaseTable = {
