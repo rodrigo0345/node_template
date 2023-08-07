@@ -1,5 +1,5 @@
-import { ApiError, ApiResponse } from "../common/ApiResponse";
-import dev_log from "../common/DevLog";
+import { ApiError, ApiResponse } from "../Common/ApiResponse";
+import dev_log from "../Common/DevLog";
 import Database, { DatabaseConfig } from "../Interfaces/Database/Database";
 import DatabaseTable from "../Interfaces/Database/DatabaseTable";
 import mysql, { Pool, ResultSetHeader, RowDataPacket } from 'mysql2';

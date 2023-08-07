@@ -1,5 +1,5 @@
 import { createClient } from "redis";
-import { ApiError, ApiResponse } from "../common/ApiResponse";
+import { ApiError, ApiResponse } from "../Common/ApiResponse";
 import Database, { DatabaseConfig } from "../Interfaces/Database/Database";
 import DatabaseTable from "../Interfaces/Database/DatabaseTable";
 

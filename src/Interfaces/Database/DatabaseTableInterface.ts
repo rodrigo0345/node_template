@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ApiResponse } from "../../common/ApiResponse";
+import { ApiResponse } from "../../Common/ApiResponse";
 import DatabaseService from "../../Databases/DatabaseService";
 import DatabaseTable from "./DatabaseTable";
 

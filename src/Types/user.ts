@@ -8,7 +8,7 @@ import { z } from "zod";
 import DatabaseService from "../Databases/DatabaseService";
 import DatabaseTable from "../Interfaces/Database/DatabaseTable";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { ApiError, ApiResponse, ApiSuccess } from "../common/ApiResponse";
+import { ApiError, ApiResponse, ApiSuccess } from "../Common/ApiResponse";
 import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceInterface";
 import DatabaseTableInterface from "../Interfaces/Database/DatabaseTableInterface";
 

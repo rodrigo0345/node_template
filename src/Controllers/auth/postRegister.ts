@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { ApiError, ApiSuccess } from '../../common/ApiResponse';
+import { ApiError, ApiSuccess } from '../../Common/ApiResponse';
 import bcrypt from 'bcrypt';
-import dev_log from '../../common/DevLog';
+import dev_log from '../../Common/DevLog';
 import User from '../../Types/user';
 import { AVAILABLE_DATABASE_SERVICES } from '../..';
 

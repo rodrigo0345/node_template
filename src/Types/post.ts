@@ -9,7 +9,7 @@ import DatabaseService from "../Databases/DatabaseService";
 import DatabaseTable from "../Interfaces/Database/DatabaseTable";
 import DatabaseTableInterface from "../Interfaces/Database/DatabaseTableInterface";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { ApiError, ApiResponse, ApiSuccess } from "../common/ApiResponse";
+import { ApiError, ApiResponse, ApiSuccess } from "../Common/ApiResponse";
 import { table } from "console";
 import DatabaseServiceImpl from '../Interfaces/Database/DatabaseServiceInterface';
 

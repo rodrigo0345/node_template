@@ -4,7 +4,7 @@ import DatabaseServiceInterface from "../Interfaces/Database/DatabaseServiceInte
 import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceInterface";
 import DatabaseTableInterface from "../Interfaces/Database/DatabaseTableInterface";
 import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableInterface";
-import { ApiError, ApiResponse, ApiSuccess } from "../common/ApiResponse";
+import { ApiError, ApiResponse, ApiSuccess } from "../Common/ApiResponse";
 
 
 // this is the weirder DatabaseTableImpl but it is needed to maintain the type safety

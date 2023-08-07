@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import { ApiError, ApiSuccess } from '../../common/ApiResponse';
+import { ApiError, ApiSuccess } from '../../Common/ApiResponse';
 import sharp from 'sharp';
 import fs from 'fs';
 import ControllerConfigInterface from '../../Interfaces/Controller/ControllerConfig';

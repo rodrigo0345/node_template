@@ -1,4 +1,4 @@
-import { ApiResponse } from "../../common/ApiResponse";
+import { ApiResponse } from "../../Common/ApiResponse";
 import DatabaseTableInterface from "./DatabaseTableInterface";
 
 

@@ -2,7 +2,7 @@ import { Router } from "express";
 import ControllerInterface from "../Interfaces/Controller/Controller";
 import ControllerConfigInterface from "../Interfaces/Controller/ControllerConfig";
 import ServerInterface from "../Interfaces/Server/Server";
-import dev_log from "../common/DevLog";
+import dev_log from "../Common/DevLog";
 import DatabaseService from "../Databases/DatabaseService";
 import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableInterface";
 

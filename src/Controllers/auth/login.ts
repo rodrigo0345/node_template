@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ApiSuccess } from '../../common/ApiResponse';
+import { ApiSuccess } from '../../Common/ApiResponse';
 import ControllerConfigInterface from '../../Interfaces/Controller/ControllerConfig';
 
 export default function login(req: Request, res: Response) {
