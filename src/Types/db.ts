@@ -4,9 +4,9 @@
     Use RowDataPacket[] for SELECT statements, while using ResultSetHeader when using UPDATE, INSERT and DELETE queries. The latter contains affectedRows and lastInsertId properties.
 */
 
-import DatabaseServiceImpl from "../interfaces/Database/DatabaseServiceImpl";
-import DatabaseTable from "../interfaces/Database/DatabaseTable";
-import DatabaseTableImpl from "../interfaces/Database/DatabaseTableImple";
+import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceImpl";
+import DatabaseTable from "../Interfaces/Database/DatabaseTable";
+import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableImple";
 import Post from "./post";
 import User from "./user";
 

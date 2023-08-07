@@ -1,7 +1,7 @@
-import { ApiError, ApiResponse } from "../common/api_response";
-import dev_log from "../common/dev_log";
-import Database, { DatabaseConfig } from "../interfaces/Database/Database";
-import DatabaseTable from "../interfaces/Database/DatabaseTable";
+import { ApiError, ApiResponse } from "../common/ApiResponse";
+import dev_log from "../common/DevLog";
+import Database, { DatabaseConfig } from "../Interfaces/Database/Database";
+import DatabaseTable from "../Interfaces/Database/DatabaseTable";
 import mysql, { Pool, ResultSetHeader, RowDataPacket } from 'mysql2';
 
 export default class MySQL implements Database {

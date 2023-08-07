@@ -1,20 +1,22 @@
 import express from 'express';
-import initial_config from './common/initial_config';
-import MySQL from './databases/MySQL';
-import { DatabaseConfig } from './interfaces/Database/Database';
-import { getActiveTables, getTablesDefinition } from './types/db';
-import DatabaseService from './databases/DatabaseService';
+import initial_config from './common/InitialConfig';
+import MySQL from './Databases/MySQL';
+import { DatabaseConfig } from './Interfaces/Database/Database';
+import { getActiveTables, getTablesDefinition } from './Types/db';
+import DatabaseService from './Databases/DatabaseService';
 import { off } from 'process';
 import ExpressServer from './Server/ExpressServer';
-import ServerConfigInterface from './interfaces/Server/ServerConfig';
-import MiddlewareInterface from './interfaces/Server/Middleware';
+import ServerConfigInterface from './Interfaces/Server/ServerConfig';
+import MiddlewareInterface from './Interfaces/Server/Middleware';
 import cookieParser from 'cookie-parser';
 import Middleware from './Middleware/Middleware';
-import ServerInterface from './interfaces/Server/Server';
+import ServerInterface from './Interfaces/Server/Server';
 import  { authConfig } from './controllers/auth/Auth';
 import Controller from './controllers/Controller';
-import DatabaseServiceImpl from './interfaces/Database/DatabaseServiceImpl';
-import dev_log from './common/dev_log';
+import DatabaseServiceImpl from './Interfaces/Database/DatabaseServiceImpl';
+import dev_log from './common/DevLog';
+import { imageConfig } from './controllers/image/Image';
+import Redis from './Databases/Redis';
 
 /* 
     Here is the entry point of the application.
@@ -26,7 +28,7 @@ import dev_log from './common/dev_log';
     This is also a good way to test if everything is working properly
     To run the app in containers simply run 'docker-compose up' in the root directory of the project and the app will be available on localhost:8000. Once you are done, run 'docker-compose down' to stop the containers.
     If you need to change the code, there is no need to restart the containers, just save the file and the changes will be applied automatically.
-    The benefit of using containers is that you don't need to install anything on your machine, everything is done inside the container and it brings already configured database and cache.
+    The benefit of using containers is that you don't need to install anything on your machine, everything is done inside the container and it brings already configured a mysql database and a redis cache.
 */
 
 console.log('Node mode:', process.env.NODE_ENV ?? 'not set');
@@ -43,6 +45,7 @@ dev_log(
   process.env.M_DATABASE_OFFSET_TIME,
 );
 
+// Setup MySQL
 const offsetDelay = Number.parseInt(process.env.M_DATABASE_OFFSET_TIME ?? '10000');
 const mysqlConfig: DatabaseConfig = {
   port: Number.parseInt(process.env.M_DATABASE_PORT ?? '3306'),
@@ -53,19 +56,34 @@ const mysqlConfig: DatabaseConfig = {
   testTimer: Number.parseInt(process.env.M_DATABASE_TIME_TO_CHECK ?? '10000'),
   idleTimeout: Number.parseInt(process.env.M_DATABASE_IDLE_TIMEOUT ?? '10000'),
 }
-
 const mysqlTables = getTablesDefinition();
 const mysql = new MySQL(mysqlConfig, mysqlTables); 
 const mainDatabaseService = new DatabaseService(mysql);
 
+// Setup Redis
+const redisConfig: DatabaseConfig = {
+  port: Number.parseInt(process.env.C_DATABASE_PORT ?? '6379'),
+  host: process.env.C_DATABASE_HOST ?? 'localhost',
+  user: process.env.C_DATABASE_USER ?? 'root',
+  password: process.env.C_DATABASE_PASSWORD ?? 'password',
+  database: process.env.C_DATABASE_NAME ?? 'cache',
+  testTimer: Number.parseInt(process.env.C_DATABASE_TIME_TO_CHECK ?? '10000'),
+  idleTimeout: Number.parseInt(process.env.C_DATABASE_IDLE_TIMEOUT ?? '10000'),
+};
+const redis = new Redis(redisConfig, undefined);
+const cacheService = new DatabaseService(redis);
 
+// Setup app global variables
 export const AVAILABLE_DATABASE_SERVICES: {
   main: DatabaseServiceImpl | null,
   cache: DatabaseServiceImpl | null,
 } = {main: mainDatabaseService, cache: null};
 
+// Spin up all the databases
 mainDatabaseService.connect(offsetDelay);
+cacheService.connect(offsetDelay);
 
+// Setup global middleware
 const cookieControlMiddleware: Middleware = new Middleware((req, res, next) => {
   res.header(
     'Access-Control-Allow-Headers',
@@ -79,8 +97,9 @@ const cookieControlMiddleware: Middleware = new Middleware((req, res, next) => {
 
 export const EXPRESS_SERVER: ExpressServer = new ExpressServer();
 
-// controllers
+// Setup Controllers
 const authController = new Controller(EXPRESS_SERVER, authConfig);
+const imageController = new Controller(EXPRESS_SERVER, imageConfig);
 
 const init: ServerConfigInterface = {
   setup: (server: ServerInterface) => {
@@ -89,8 +108,9 @@ const init: ServerConfigInterface = {
   port: process.env.PORT ? Number.parseInt(process.env.PORT) : 8000,
   host: '0.0.0.0',
   middlewares: [cookieControlMiddleware],
-  controllers: [authController],
+  controllers: [authController, imageController],
 };
 
+// Start the server
 EXPRESS_SERVER.start(init);
 

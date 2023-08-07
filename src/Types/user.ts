@@ -5,13 +5,13 @@
 */
 
 import { z } from "zod";
-import DatabaseService from "../databases/DatabaseService";
-import DatabaseTable from "../interfaces/Database/DatabaseTable";
-import DatabaseTableImpl from "../interfaces/Database/DatabaseTableImple";
+import DatabaseService from "../Databases/DatabaseService";
+import DatabaseTable from "../Interfaces/Database/DatabaseTable";
+import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableImple";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { ApiError, ApiResponse, ApiSuccess } from "../common/api_response";
+import { ApiError, ApiResponse, ApiSuccess } from "../common/ApiResponse";
 import { table } from "console";
-import DatabaseServiceImpl from "../interfaces/Database/DatabaseServiceImpl";
+import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceImpl";
 
 export type post = {
   id?: number;

@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { ApiError, ApiSuccess } from '../../common/api_response';
+import { ApiError, ApiSuccess } from '../../common/ApiResponse';
 import bcrypt from 'bcrypt';
-import dev_log from '../../common/dev_log';
-import User from '../../types/user';
+import dev_log from '../../common/DevLog';
+import User from '../../Types/user';
 import { AVAILABLE_DATABASE_SERVICES } from '../..';
 
 
-export default async function postRegister(req: Request, res: Response) {
+export default async function register(req: Request, res: Response) {
   dev_log({ body: req.body });
   const { username, password, name, role } = req.body;
   const email = username;

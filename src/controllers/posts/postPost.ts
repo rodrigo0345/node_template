@@ -1,9 +1,9 @@
-import { cache, mDatabase } from '../../';
+import { cache, mDatabase } from '../..';
 import { Request, Response } from 'express';
-import tables from '../../types/db';
-import { ApiSuccess } from '../../common/api_response';
+import tables from '../../Types/db';
+import { ApiSuccess } from '../../common/ApiResponse';
 import { ResultSetHeader } from 'mysql2';
-import dev_log from '../../common/dev_log';
+import dev_log from '../../common/DevLog';
 
 export default async function postPost(req: Request, res: Response) {
   const { title, content } = req.body;

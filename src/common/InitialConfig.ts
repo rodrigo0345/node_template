@@ -9,12 +9,12 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import session from 'express-session';
 import { Strategy } from 'passport-local';
-import { ApiError } from './api_response';
+import { ApiError } from './ApiResponse';
 import bcrypt from 'bcrypt';
-import dev_log from './dev_log';
-import ServerConfigInterface from '../interfaces/Server/ServerConfig';
-import ServerInterface from '../interfaces/Server/Server';
-import User, { UserType } from '../types/user';
+import dev_log from './DevLog';
+import ServerConfigInterface from '../Interfaces/Server/ServerConfig';
+import ServerInterface from '../Interfaces/Server/Server';
+import User, { UserType } from '../Types/user';
 import { AVAILABLE_DATABASE_SERVICES } from '..';
 import { z } from 'zod';
 

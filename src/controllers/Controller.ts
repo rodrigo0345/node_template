@@ -1,10 +1,10 @@
 import { Router } from "express";
-import ControllerInterface from "../interfaces/Controller/Controller";
-import ControllerConfigInterface from "../interfaces/Controller/ControllerConfig";
-import ServerInterface from "../interfaces/Server/Server";
-import dev_log from "../common/dev_log";
-import DatabaseService from "../databases/DatabaseService";
-import DatabaseTableImpl from "../interfaces/Database/DatabaseTableImple";
+import ControllerInterface from "../Interfaces/Controller/Controller";
+import ControllerConfigInterface from "../Interfaces/Controller/ControllerConfig";
+import ServerInterface from "../Interfaces/Server/Server";
+import dev_log from "../common/DevLog";
+import DatabaseService from "../Databases/DatabaseService";
+import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableImple";
 
 export default class Controller implements ControllerInterface {
     private router: Router;

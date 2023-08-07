@@ -1,5 +1,5 @@
-import { ApiResponse } from "../../common/api_response";
-import DatabaseService from "../../databases/DatabaseService";
+import { ApiResponse } from "../../common/ApiResponse";
+import DatabaseService from "../../Databases/DatabaseService";
 import DatabaseTable from "./DatabaseTable";
 
 export default interface DatabaseTableImpl<T> {

@@ -1,5 +1,5 @@
-import MiddlewareInterface from "../interfaces/Server/Middleware";
-import ServerInterface from "../interfaces/Server/Server";
+import MiddlewareInterface from "../Interfaces/Server/Middleware";
+import ServerInterface from "../Interfaces/Server/Server";
 
 export default class Middleware implements MiddlewareInterface {
     private state: "active" | "notactive";

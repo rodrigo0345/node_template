@@ -1,5 +1,5 @@
 import mysql from 'mysql2';
-import { mDatabase, cache } from '../../';
+import { mDatabase, cache } from '../..';
 import { Request, Response } from 'express';
 
 export default async function getPosts(req: Request, res: Response) {

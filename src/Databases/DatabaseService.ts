@@ -1,6 +1,6 @@
-import Database, { DatabaseConfig } from "../interfaces/Database/Database";
-import DatabaseServiceImpl from "../interfaces/Database/DatabaseServiceImpl";
-import DatabaseTable from "../interfaces/Database/DatabaseTable";
+import Database, { DatabaseConfig } from "../Interfaces/Database/Database";
+import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceImpl";
+import DatabaseTable from "../Interfaces/Database/DatabaseTable";
 
 export default class DatabaseService implements DatabaseServiceImpl {
     private database: Database;

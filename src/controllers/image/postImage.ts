@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import { ApiError, ApiSuccess } from '../../common/api_response';
+import { ApiError, ApiSuccess } from '../../common/ApiResponse';
 import sharp from 'sharp';
 import fs from 'fs';
-import ControllerConfigInterface from '../../interfaces/Controller/ControllerConfig';
+import ControllerConfigInterface from '../../Interfaces/Controller/ControllerConfig';
 
 export default function postImage(req: Request, res: Response) {
   const file = req.file;
