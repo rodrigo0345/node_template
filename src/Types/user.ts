@@ -126,7 +126,7 @@ export default class User implements DatabaseTableInterface<UserType> {
   async deleteOne(data: UserType): Promise<ApiResponse<UserType>> {
     if(!this.database) throw new Error('Database not attached');
     return await this.database?.query(async (connection) => {
-      await connection.query(`DELETE FROM ${User.table.name};`) ;
+      await connection.query(`DELETE FROM ${User.table.name} WHERE email = ?;`, [data.email]);
       return ApiSuccess<UserType>(data); 
     }) as ApiResponse<UserType>;
   }

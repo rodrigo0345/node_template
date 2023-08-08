@@ -1,10 +1,15 @@
+export enum Status {
+  Success = 'success',
+  Error = 'error',
+}
+
 export type ApiResponse<T> =
   | ApiSuccess<T>
   | ApiError;
 
 export const ApiSuccess = <T>(data: T): ApiSuccess<T> => {
   return {
-    status: 'success',
+    status: Status.Success,
     data,
     timestamp: new Date(),
   } as ApiSuccess<T>;
@@ -12,7 +17,7 @@ export const ApiSuccess = <T>(data: T): ApiSuccess<T> => {
 
 export const ApiError = (message: string): ApiError => {
   const error: ApiError = {
-    status: 'error',
+    status: Status.Error,
     message,
     timestamp: new Date(),
   }
