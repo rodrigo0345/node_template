@@ -31,7 +31,11 @@ services:
       - M_DATABASE_PASSWORD=${M_DATABASE_PASSWORD}
       - M_DATABASE_HOST=${M_DATABASE_HOST}
       - M_DATABASE_NAME=${M_DATABASE_NAME}
-      - REDIS_URL=${REDIS_URL}
+
+      - C_DATABASE_PORT=${C_DATABASE_PORT}
+      - C_DATABASE_USER=${C_DATABASE_USER}
+      - C_DATABASE_PASSWORD=${C_DATABASE_PASSWORD}
+      - C_DATABASE_HOST=${C_DATABASE_HOST}
     networks:
       - backend-to-cache
       - backend-to-main_db

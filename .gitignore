@@ -38,4 +38,8 @@ lerna-debug.log*
 .yarn/*
 !.yarn/releases
 
+# environment variables
 .env
+
+# images
+public/images
