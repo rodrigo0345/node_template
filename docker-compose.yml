@@ -24,20 +24,22 @@ services:
       - ./public:/workspace/public
     environment:
       - NODE_ENV=development
-      - HOST="0.0.0.0"
+      - HOST=0.0.0.0
       - PORT=${PORT}
       # if you change this, change the MYSQL_DATABASE in the main_db service
       - DATABASE_NAME=${M_DATABASE_NAME}
       - M_DATABASE_PORT=${M_DATABASE_PORT}
       - M_DATABASE_USER=${M_DATABASE_USER}
       - M_DATABASE_PASSWORD=${M_DATABASE_PASSWORD}
-      - M_DATABASE_HOST="main_db"
+      - M_DATABASE_HOST=main_db
       - M_DATABASE_NAME=${M_DATABASE_NAME}
+      - M_DATABASE_TIME_TO_CHECK=10000
       
       - C_DATABASE_PORT=${C_DATABASE_PORT}
       - C_DATABASE_USER=${C_DATABASE_USER}
       - C_DATABASE_PASSWORD=${C_DATABASE_PASSWORD}
-      - C_DATABASE_HOST="cache"
+      - C_DATABASE_HOST=cache
+      - C_DATABASE_TIME_TO_CHECK=10000
     networks:
       - backend-to-cache
       - backend-to-main_db
