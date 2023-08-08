@@ -7,7 +7,7 @@
     "test": "jest",
     "start": "tsnd ./src/index.ts",
     "local": "sudo systemctl start mysql; redis-server & tsnd ./index.ts;",
-    "build-test": "tsc && jest --clearCache && NODE_OPTIONS=--experimental-vm-modules jest --forceExit",
+    "build-test": "rm -rf dist && tsc && jest --clearCache && NODE_OPTIONS=--experimental-vm-modules jest --forceExit",
     "build-run": "cp .env ./dist/.env && tsc && node dist/src/index.js"
   },
   "author": "Rodrigo Casanova",

@@ -13,7 +13,7 @@ export default class Cache implements CacheInterface {
     constructor(database: DatabaseServiceInterface) {
         this.database = database;
     }
-    async get<T, Y extends DatabaseTableInterface<any>>(key: string, model: Y): Promise<ApiResponse<T>> {
+    async get<const T, const Y extends DatabaseTableInterface<any>>(key: string, model: Y): Promise<ApiResponse<T>> {
         const result = await this.database.query(async (connection) => {
             const result = await connection.get(key);
             return ApiSuccess<string>(result);
@@ -30,7 +30,7 @@ export default class Cache implements CacheInterface {
         
         return ApiSuccess<T>(data);
     }
-    async getAll<T, Y extends DatabaseTableInterface<any>>(key: string, model: Y): Promise<ApiResponse<T[]>> {
+    async getAll<const T, const Y extends DatabaseTableInterface<any>>(key: string, model: Y): Promise<ApiResponse<T[]>> {
         const result = await this.database.query(async (connection) => {
             const result = await connection.get(key);
             return ApiSuccess<string>(result);
