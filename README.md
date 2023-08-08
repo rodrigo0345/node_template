@@ -168,4 +168,5 @@ To access the user data simply use req.user in the request and it is as simple a
 - [ts-reset](https://www.npmjs.com/package/@total-typescript/ts-reset)
 
 ## Ilustration of the Dependency Injection Arquitecture used
-![Alt text](image.png)
+
+![Alt text](https://images.pexels.com/photos/17897414/pexels-photo-17897414.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)
