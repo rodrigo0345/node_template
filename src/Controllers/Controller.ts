@@ -46,7 +46,7 @@ export default class Controller implements ControllerInterface {
 
         this.server.getServer().use(this.router);
         this.config.forEach((config: ControllerConfigInterface) => {
-            dev_log("Controller", "Controller added:", config.relativePath);
+            dev_log("Controller added:", config.relativePath);
         });
     }
 }

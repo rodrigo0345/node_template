@@ -4,7 +4,7 @@ import path from "path";
 import getPosts from "./getPosts";
 import postPost from "./postPost";
 
-export const imageConfig: ControllerConfigInterface[] = [
+export const postsConfig: ControllerConfigInterface[] = [
     {
         relativePath: "/posts",
         type: "post",

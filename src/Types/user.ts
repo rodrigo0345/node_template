@@ -85,10 +85,10 @@ export default class User implements DatabaseTableInterface<UserType> {
     }) as ApiResponse<number[]>;
   }
 
-  async getOne(where: string): Promise<ApiResponse<UserType>> {
+  async getOne(): Promise<ApiResponse<UserType>> {
     if(!this.database) throw new Error('Database not attached');
     return await this.database?.query(async (connection) => {
-      const [rows] = await connection.query(`SELECT * FROM ${User.table.name} WHERE ?;`, [where]);
+      const [rows] = await connection.query(`SELECT * FROM ${User.table.name};`);
       const data = ((rows as RowDataPacket[])[0] as UserType);
       return ApiSuccess<UserType>(data); 
     }) as ApiResponse<UserType>;
@@ -103,32 +103,30 @@ export default class User implements DatabaseTableInterface<UserType> {
     }) as ApiResponse<UserType>;
   }
 
-  async getAll(where: string): Promise<ApiResponse<UserType[]>> {
+  async getAll(): Promise<ApiResponse<UserType[]>> {
     if(!this.database) throw new Error('Database not attached');
     return await this.database?.query(async (connection) => {
-      const [rows] = await connection.query(`SELECT * FROM ${User.table.name} WHERE ?;`, [where]);
+      const [rows] = await connection.query(`SELECT * FROM ${User.table.name};`);
       const data = ((rows as RowDataPacket[]) as UserType[]);
       return ApiSuccess<UserType[]>(data); 
     }) as ApiResponse<UserType[]>;
   }
   
-  async updateOne(where: string, data: UserType): Promise<ApiResponse<number>> {
+  async updateOne(data: UserType): Promise<ApiResponse<number>> {
     if(!this.database) throw new Error('Database not attached');
     return await this.database?.query(async (connection) => {
       const [result] = await connection.query(`
         UPDATE ${User.table.name} 
-        SET name = ?, role = ?, password = ?, email = ?
-        WHERE ?;
-      `, [data.name, data.role, data.password, data.email, where]) ;
+        SET name = ?, role = ?, password = ?, email = ?;
+      `, [data.name, data.role, data.password, data.email]) ;
       return ApiSuccess<number>((result  as ResultSetHeader).insertId); 
     }) as ApiResponse<number>;
   }
 
-  async deleteOne(where: string, data: UserType): Promise<ApiResponse<UserType>> {
-    where = this.defaultWhere(where, data);
+  async deleteOne(data: UserType): Promise<ApiResponse<UserType>> {
     if(!this.database) throw new Error('Database not attached');
     return await this.database?.query(async (connection) => {
-      await connection.query(`DELETE FROM ${User.table.name} WHERE ?;`, [where]) ;
+      await connection.query(`DELETE FROM ${User.table.name};`) ;
       return ApiSuccess<UserType>(data); 
     }) as ApiResponse<UserType>;
   }

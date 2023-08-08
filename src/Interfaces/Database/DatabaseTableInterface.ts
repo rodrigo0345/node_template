@@ -7,10 +7,10 @@ export default interface DatabaseTableInterface<T> {
     typeInst: z.ZodType<T>;
     getName(): string;
     setDatabase(database: DatabaseService): void;
-    getOne(where: string): Promise<ApiResponse<T>>
-    getAll(where: string): Promise<ApiResponse<T[]>>
+    getOne(): Promise<ApiResponse<T>>
+    getAll(): Promise<ApiResponse<T[]>>
     insertOne(data: T): Promise<ApiResponse<number>>
     insertMany(data: T[]): Promise<ApiResponse<number[]>>
-    updateOne(where: string, data: T): Promise<ApiResponse<number>>;
-    deleteOne(where: string, data: T): Promise<ApiResponse<T>>
+    updateOne(data: T): Promise<ApiResponse<number>>;
+    deleteOne(data: T): Promise<ApiResponse<T>>
 }

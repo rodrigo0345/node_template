@@ -31,7 +31,11 @@ services:
       - M_DATABASE_PASSWORD=${M_DATABASE_PASSWORD}
       - M_DATABASE_HOST=${M_DATABASE_HOST}
       - M_DATABASE_NAME=${M_DATABASE_NAME}
-      - REDIS_URL=${REDIS_URL}
+      
+      - C_DATABASE_PORT=${C_DATABASE_PORT}
+      - C_DATABASE_USER=${C_DATABASE_USER}
+      - C_DATABASE_PASSWORD=${C_DATABASE_PASSWORD}
+      - C_DATABASE_HOST=${C_DATABASE_HOST}
     networks:
       - backend-to-cache
       - backend-to-main_db
@@ -65,5 +69,8 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - cache:/cache-portfolio
+    environment:  # Add environment variables here
+      - REDIS_PASSWORD=${C_DATABASE_PASSWORD}
+      - REDIS_USERNAME=${C_DATABASE_USER}
     networks:
       - backend-to-cache

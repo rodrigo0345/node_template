@@ -3,6 +3,7 @@ import { AVAILABLE_DATABASE_SERVICES } from '../..';
 import { Request, Response } from 'express';
 import Cache from '../../Types/cache';
 import Post, { PostType } from '../../Types/post';
+import dev_log from '../../Common/DevLog';
 
 export default async function getPosts(req: Request, res: Response) {
   if(!AVAILABLE_DATABASE_SERVICES.main) {
@@ -17,14 +18,17 @@ export default async function getPosts(req: Request, res: Response) {
   
   // check cache
   const cachedPostsKey = 'g_posts';
-  const cached = cache? await cache?.get<PostType, Post>(cachedPostsKey, postTable): null;
+  const cached = cache? await cache?.getAll<PostType, Post>(cachedPostsKey, postTable): null;
 
-  if(cached) {
+  dev_log({ cached });
+  if(cached?.status === 'success' && cached.data.length > 0) {
     return res.json(cached);
   }
 
   // if not in cache, get from database
-  const result = await postTable.getAll("");
+  const result = await postTable.getAll();
+
+  dev_log({ main: result });
 
   if (result.status === 'error') {
     return res.status(500).json(result);

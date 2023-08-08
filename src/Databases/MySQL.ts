@@ -10,13 +10,13 @@ export default class MySQL implements Database {
     private tables: DatabaseTable[];
 
     constructor(config: DatabaseConfig, tables: DatabaseTable[]) {
+        
         this.config = config;
         this.tables = tables;
+        this.recursiveTesting();
     }
     
     async connect(): Promise<void> {
-        this.recursiveTesting();
-
         try{
             this.connection = mysql
             .createPool({
@@ -28,14 +28,13 @@ export default class MySQL implements Database {
                 idleTimeout: this.config.idleTimeout,
             })
             .promise();
+            await this.initialSetup();
+            this.tables.forEach(table => this.createTable(table));
+            dev_log('MySQL connected');
         } catch(error: unknown) {
             console.error(error);
             return;
-        }
-        await this.initialSetup();
-        
-        this.tables.forEach(table => this.createTable(table));
-        dev_log('MySQL connected');
+        }    
     }
     
     disconnect(): void {
@@ -92,9 +91,13 @@ export default class MySQL implements Database {
     // database is online and ready to be used
     private async recursiveTesting() {
         setInterval(async () => {
-            if(!this.connection) return;
-            if(!await this.test()) this.connection = undefined;
-        }, this.config.testTimer);
+            
+            if(!this.connection) {
+                dev_log(`No connection to MySQL, retrying in ${(this.config.testTimer * 2)/1000}s...`);
+                await this.connect();
+            }
+            else if(!await this.test()) this.connection = undefined;
+        }, this.config.testTimer * 2);
     }
 
     private async initialSetup() {

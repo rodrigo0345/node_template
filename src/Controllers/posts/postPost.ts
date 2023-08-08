@@ -9,7 +9,7 @@ import Cache from '../../Types/cache';
 export default async function postPost(req: Request, res: Response) {
   const { title, content } = req.body;
 
-  let author = 'dunno';
+  let author = 'dunno@nomail.com';
 
   if (req.user) {
     author = (req.user as any).email;

@@ -15,6 +15,7 @@ import dev_log from './Common/DevLog';
 import { imageConfig } from './Controllers/image/Image';
 import Redis from './Databases/Redis';
 import Cache from './Types/cache';
+import { postsConfig } from './Controllers/posts/Post';
 
 /* 
     Here is the entry point of the application.
@@ -98,6 +99,7 @@ export const EXPRESS_SERVER: ExpressServer = new ExpressServer();
 // Setup Controllers
 const authController = new Controller(EXPRESS_SERVER, authConfig);
 const imageController = new Controller(EXPRESS_SERVER, imageConfig);
+const postsController = new Controller(EXPRESS_SERVER, postsConfig);
 
 const init: ServerConfigInterface = {
   setup: (server: ServerInterface) => {
@@ -106,7 +108,7 @@ const init: ServerConfigInterface = {
   port: process.env.PORT ? Number.parseInt(process.env.PORT) : 8000,
   host: '0.0.0.0',
   middlewares: [cookieControlMiddleware],
-  controllers: [authController, imageController],
+  controllers: [authController, imageController, postsController],
 };
 
 // Start the server

@@ -2,6 +2,7 @@ import express from "express";
 import MiddlewareInterface from "../Interfaces/Server/Middleware";
 import ServerInterface from "../Interfaces/Server/Server";
 import ServerConfigInterface from "../Interfaces/Server/ServerConfig";
+import isDevMode from "../Common/DevMode";
 
 export default class ExpressServer implements ServerInterface {
     private readonly server: any;
@@ -22,11 +23,12 @@ export default class ExpressServer implements ServerInterface {
             console.log(`Server listening on ${config.host}:${config.port}`);
         });
 
-        process.on('SIGTERM', () => {
-            console.info('SIGTERM signal received.');
-            console.log('Closing http server.');
-            this.stop();
-        });
+        if(!isDevMode())
+            process.on('SIGTERM', () => {
+                console.info('SIGTERM signal received.');
+                console.log('Closing http server.');
+                this.stop();
+            });
     }
     stop(): void {
         /*

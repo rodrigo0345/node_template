@@ -12,6 +12,7 @@ import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { ApiError, ApiResponse, ApiSuccess } from "../Common/ApiResponse";
 import { table } from "console";
 import DatabaseServiceImpl from '../Interfaces/Database/DatabaseServiceInterface';
+import dev_log from '../Common/DevLog';
 
 export type PostType = z.infer<typeof Post.type>;
 
@@ -35,7 +36,7 @@ export default class Post implements DatabaseTableInterface<PostType> {
     id: z.number().optional(),
     title: z.string().min(3).max(255),
     content: z.string().min(4),
-    author: z.string().email(),
+    author: z.string().email().optional(),
   });
 
   typeInst = Post.type;
@@ -72,41 +73,39 @@ export default class Post implements DatabaseTableInterface<PostType> {
     }) as ApiResponse<number[]>;
   }
 
-  async getOne(where: string): Promise<ApiResponse<PostType>> {
+  async getOne(): Promise<ApiResponse<PostType>> {
     if(!this.database) throw new Error('Database not attached');
     return await this.database?.query(async (connection) => {
-      const [rows] = await connection.query(`SELECT * FROM ${Post.table.name} WHERE ?;`, [where]);
+      const [rows] = await connection.query(`SELECT * FROM ${Post.table.name};`);
       const data = ((rows as RowDataPacket[])[0] as PostType);
       return ApiSuccess<PostType>(data); 
     }) as ApiResponse<PostType>;
   }
 
-  async getAll(where: string): Promise<ApiResponse<PostType[]>> {
+  async getAll(): Promise<ApiResponse<PostType[]>> {
     if(!this.database) throw new Error('Database not attached');
     return await this.database?.query(async (connection) => {
-      const [rows] = await connection.query(`SELECT * FROM ${Post.table.name} WHERE ?;`, [where]);
+      const [rows] = await connection.query(`SELECT * FROM ${Post.table.name};`);
       const data = ((rows as RowDataPacket[]) as PostType[]);
       return ApiSuccess<PostType[]>(data); 
     }) as ApiResponse<PostType[]>;
   }
   
-  async updateOne(where: string, data: PostType): Promise<ApiResponse<number>> {
+  async updateOne(data: PostType): Promise<ApiResponse<number>> {
     if(!this.database) throw new Error('Database not attached');
     return await this.database?.query(async (connection) => {
       const [result] = await connection.query(`
         UPDATE ${Post.table.name} 
-        SET title = ?, content = ?, author= ?
-        WHERE ?;
-      `, [data.title, data.content, data.author, where]) ;
+        SET title = ?, content = ?, author= ?;
+      `, [data.title, data.content, data.author]) ;
       return ApiSuccess<number>((result  as ResultSetHeader).insertId); 
     }) as ApiResponse<number>;
   }
 
-  async deleteOne(where: string, data: PostType): Promise<ApiResponse<PostType>> {
-    where = this.defaultWhere(where, data);
+  async deleteOne(data: PostType): Promise<ApiResponse<PostType>> {
     if(!this.database) throw new Error('Database not attached');
     return await this.database?.query(async (connection) => {
-      await connection.query(`DELETE FROM ${Post.table.name} WHERE ?;`, [where]) ;
+      await connection.query(`DELETE FROM ${Post.table.name};`);
       return ApiSuccess<PostType>(data); 
     }) as ApiResponse<PostType>;
   }
