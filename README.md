@@ -55,7 +55,7 @@ docker-compose down
 
 For additional configuration, don't forget to change the name of the .env.example to .env and mess around with the values for your specific use case.
 
-## File structure:
+## File structure
 
 - .devcontainer # Optional and used only for Visual Studio Code
 - .vscode # Optional and used only for Visual Studio Code
@@ -166,3 +166,6 @@ To access the user data simply use req.user in the request and it is as simple a
 - [redis](https://www.npmjs.com/package/redis)
 - [sharp](https://www.npmjs.com/package/sharp)
 - [ts-reset](https://www.npmjs.com/package/@total-typescript/ts-reset)
+
+## Ilustration of the Dependency Injection Arquitecture used
+![Alt text](image.png)
