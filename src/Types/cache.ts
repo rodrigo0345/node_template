@@ -30,7 +30,6 @@ export default class Cache implements CacheInterface {
         
         return ApiSuccess<T>(data);
     }
-
     async getAll<T, Y extends DatabaseTableInterface<any>>(key: string, model: Y): Promise<ApiResponse<T[]>> {
         const result = await this.database.query(async (connection) => {
             const result = await connection.get(key);
@@ -50,8 +49,6 @@ export default class Cache implements CacheInterface {
         
         return ApiSuccess<T[]>(data);
     }
-
-
     async save(key: string, data: unknown, timeout: number): Promise<ApiResponse<boolean>> {
         const result = await this.database.query(async (connection) => {
             const stringifiedData = JSON.stringify(data);

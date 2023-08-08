@@ -16,6 +16,7 @@ import { imageConfig } from './Controllers/image/Image';
 import Redis from './Databases/Redis';
 import Cache from './Types/cache';
 import { postsConfig } from './Controllers/posts/Post';
+import dotenv from 'dotenv';
 
 /* 
     Here is the entry point of the application.
@@ -29,6 +30,8 @@ import { postsConfig } from './Controllers/posts/Post';
     If you need to change the code, there is no need to restart the containers, just save the file and the changes will be applied automatically.
     The benefit of using containers is that you don't need to install anything on your machine, everything is done inside the container and it brings already configured a mysql database and a redis cache.
 */
+
+dotenv.config();
 
 console.log('Node mode:', process.env.NODE_ENV ?? 'not set');
 
@@ -106,7 +109,7 @@ const init: ServerConfigInterface = {
     initial_config(server.getServer());
   },
   port: process.env.PORT ? Number.parseInt(process.env.PORT) : 8000,
-  host: '0.0.0.0',
+  host: process.env.HOST ? process.env.HOST : 'localhost',
   middlewares: [cookieControlMiddleware],
   controllers: [authController, imageController, postsController],
 };

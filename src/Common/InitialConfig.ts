@@ -5,7 +5,6 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import compression from 'compression';
-import dotenv from 'dotenv';
 import passport from 'passport';
 import session from 'express-session';
 import { Strategy } from 'passport-local';
@@ -28,8 +27,6 @@ export const rateLimiterUsingThirdParty = rateLimit({
 });
 
 export default function initial_config(app: Express) {
-  dotenv.config();
-
   // use this when you are behind a proxy (e.g. nginx) (to me this made nginx not work... so I disable it as default)
   // app.set('trust proxy', 1);
 
