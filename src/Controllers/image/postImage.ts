@@ -40,12 +40,3 @@ export default function postImage(req: Request, res: Response) {
     return res.status(500).json(ApiError(err.message));
   }
 }
-
-export const postImageConfig: ControllerConfigInterface = {
-  relativePath: '/image/post',
-  type: 'post',
-  middleware: (req: Request, res: Response, next: () => void) => {
-    next();
-  },
-  exec: postImage,
-};

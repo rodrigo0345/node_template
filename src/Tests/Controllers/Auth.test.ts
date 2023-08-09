@@ -35,12 +35,12 @@ describe('Auth testing', () => {
         
 
         it("Delete an user", async () => {
-            const server = await request(EXPRESS_SERVER.getServer()).post('/auth/register').send(sentUser);
+            const server = await request(`http://localhost:${process.env.PORT}`).post('/auth/register').send(sentUser);
             await cleanDatabase();
         });
 
         it("Possible conditions", async () => {
-            const server = await request(EXPRESS_SERVER.getServer());
+            const server = await request(`http://localhost:${process.env.PORT}`);
             let response = await server.post('/auth/register').send(sentUser);
             expect(response.body.status).toBe(Status.Success);
 
@@ -58,7 +58,7 @@ describe('Auth testing', () => {
 
     describe("Login", () => {
         it("Possible conditions", async () => {
-            const server = await request(EXPRESS_SERVER.getServer());
+            const server = await request(`http://localhost:${process.env.PORT}`);
             
             // Don't send password
             let response = await server.post('/auth/login').send({
