@@ -30,7 +30,7 @@ export default class Redis implements Database {
                 console.error('Redis Client Error', err);
             });
             process.on('exit', () => {
-                console.log('closing redis...');
+                console.log('Closing redis...');
                 if (!this.connection) return;
                 this.connection.quit();
             });

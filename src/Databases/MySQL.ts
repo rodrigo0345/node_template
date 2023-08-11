@@ -10,7 +10,6 @@ export default class MySQL implements Database {
     private tables: DatabaseTable[];
 
     constructor(config: DatabaseConfig, tables: DatabaseTable[]) {
-        
         this.config = config;
         this.tables = tables;
         this.recursiveTesting();
@@ -19,20 +18,21 @@ export default class MySQL implements Database {
     async connect(): Promise<void> {
         try{
             this.connection = mysql
-            .createPool({
-                port: this.config.port,
-                host: this.config.host,
-                user: this.config.user,
-                database: this.config.database,
-                password: this.config.password,
-                idleTimeout: this.config.idleTimeout,
-            })
-            .promise();
+                .createPool({
+                    port: this.config.port,
+                    host: this.config.host,
+                    user: this.config.user,
+                    database: this.config.database,
+                    password: this.config.password,
+                    idleTimeout: this.config.idleTimeout,
+                })
+                .promise();
             await this.initialSetup();
-            this.tables.forEach(table => this.createTable(table));
+            await Promise.all(this.tables.map(async table => await this.createTable(table)));
             dev_log('MySQL connected');
         } catch(error: unknown) {
-            console.error(error);
+            this.connection = undefined;
+            console.error("MySQL Error: " + (error as Error).message);
             return;
         }    
     }
@@ -54,6 +54,7 @@ export default class MySQL implements Database {
 
     async test(): Promise<boolean> {
         try {
+            if(!this.connection) return false;
             await this.connection.query('SELECT 1 + 1 AS solution');
         } catch(error: unknown) {
             this.connection = undefined;
@@ -67,8 +68,11 @@ export default class MySQL implements Database {
         return this.connection !== undefined;
     }
 
-    createTable(table: DatabaseTable): void {
-        if(!this.connection) throw new Error('MySQL not connected');
+    async createTable(table: DatabaseTable): Promise<void> {
+        if(!this.connection) {
+            dev_log('MySQL not connected');
+            return;
+        }
         const numberParams = table.parameters.length;
 
         if(numberParams === 0) return;
@@ -82,7 +86,7 @@ export default class MySQL implements Database {
         }
         stringQuery += ');';
 
-        this.connection.query(stringQuery);
+        await this.connection.query(stringQuery);
 
         dev_log(`Created table ${table.name}`);
     }
@@ -91,9 +95,8 @@ export default class MySQL implements Database {
     // database is online and ready to be used
     private async recursiveTesting() {
         setInterval(async () => {
-            
             if(!this.connection) {
-                dev_log(`No connection to MySQL, retrying in ${(this.config.testTimer * 2)/1000}s...`);
+                dev_log(`No connection to MySQL, retrying in ${(this.config.testTimer * 2)/1000.00}s...`);
                 await this.connect();
             }
             else if(!await this.test()) this.connection = undefined;
