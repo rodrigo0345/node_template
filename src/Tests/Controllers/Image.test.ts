@@ -15,13 +15,13 @@ describe('Image testing', () => {
             const server = await request(`http://localhost:${process.env.PORT}`);
 
             console.log({port: process.env.PORT});
-            const response = await server.post('/image').attach('image', path.resolve('filesForTesting/test.png'));
+            const response = await server.post('/image').attach('image', path.resolve('attachments/test.png'));
             expect(response.status).toBe(200);
         });
 
         it('Uploading a pdf', async () => {
             const server = await request(`http://localhost:${process.env.PORT}`);
-            const response = await server.post('/image').attach('image', path.resolve('filesForTesting/test.pdf'));
+            const response = await server.post('/image').attach('image', path.resolve('attachments/test.pdf'));
             expect(response.status).toBe(500);
         });
     });
