@@ -8,10 +8,14 @@ export default class DatabaseService implements DatabaseServiceInterface {
     constructor(database: Database){
         this.database = database;
     }
-    async connect(offsetDelay: number) {
-        await setTimeout(() => {
-            this.database.connect();
-        }, offsetDelay);
+    async connect(offsetDelay: number){
+        function sleep(ms: number) {
+            return new Promise((resolve) => {
+                setTimeout(resolve, ms);
+            });
+        }
+        await sleep(offsetDelay);
+        await this.database.connect();
     }
     query(callback: (connection: any) => unknown): Promise<unknown> {
         return this.database.execute(callback);

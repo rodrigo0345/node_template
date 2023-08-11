@@ -13,6 +13,10 @@ export default class ExpressServer implements ServerInterface {
     getServer() {
         return this.server;
     }
+
+    configAndStart(callback: () => ServerConfigInterface): void {
+        this.start(callback());
+    }
     
     start(config: ServerConfigInterface): void {
         config.setup(this);

@@ -4,25 +4,9 @@
     Use RowDataPacket[] for SELECT statements, while using ResultSetHeader when using UPDATE, INSERT and DELETE queries. The latter contains affectedRows and lastInsertId properties.
 */
 
-import DatabaseServiceImpl from "../Interfaces/Database/DatabaseServiceInterface";
-import DatabaseTable from "../Interfaces/Database/DatabaseTable";
-import DatabaseTableImpl from "../Interfaces/Database/DatabaseTableInterface";
 import Post from "./post";
 import User from "./user";
 
 export function getTablesDefinition() {
   return [User.table, Post.table];
-}
-
-export function getActiveTables(database: DatabaseServiceImpl) {
-
-  const Entities = new Map<string, DatabaseTableImpl<unknown>>();
-
-  const post = new Post(database);
-  Entities.set(post.getName(), post);
-
-  const user = new User(database);
-  Entities.set(user.getName(), user);
-
-  return Entities;
 }

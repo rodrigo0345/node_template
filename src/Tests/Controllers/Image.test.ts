@@ -10,21 +10,19 @@ describe('Image testing', () => {
     dotenv.config();
 
     describe('Upload file', () => {
-        it('Activating the server', async () => {
-            await request(EXPRESS_SERVER.getServer()).get('/');
-        });
+
         it('Uploading image', async () => {
             const server = await request(`http://localhost:${process.env.PORT}`);
 
             console.log({port: process.env.PORT});
-            const response = await server.post('/image/upload').attach('image', path.resolve('FilesForTesting/test.png'));
-            expect(response.status).toBe(Status.Success);
+            const response = await server.post('/image').attach('image', path.resolve('filesForTesting/test.png'));
+            expect(response.status).toBe(200);
         });
 
         it('Uploading a pdf', async () => {
             const server = await request(`http://localhost:${process.env.PORT}`);
-            const response = await server.post('/image/upload').attach('image', path.resolve('FilesForTesting/test.pdf'));
-            expect(response.status).toBe(Status.Error);
+            const response = await server.post('/image').attach('image', path.resolve('filesForTesting/test.pdf'));
+            expect(response.status).toBe(500);
         });
     });
 

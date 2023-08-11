@@ -4,10 +4,10 @@
   "description": "This enables me to not have to configure any Databases, parsers and/or common middlewares",
   "main": "index.ts",
   "scripts": {
-    "test": "jest",
+    "test": "rm -rf dist && tsc && jest --clearCache && NODE_OPTIONS=--experimental-vm-modules jest --forceExit",
     "start": "tsnd ./src/index.ts",
     "local": "sudo systemctl start mysql; redis-server & tsnd ./index.ts;",
-    "build-test": "rm -rf dist && tsc && jest --clearCache && NODE_OPTIONS=--experimental-vm-modules jest --forceExit",
+    "build": "cp .env ./dist/.env && tsc",
     "build-run": "cp .env ./dist/.env && tsc && node dist/src/index.js"
   },
   "author": "Rodrigo Casanova",

@@ -3,9 +3,15 @@ import User, { Role, UserType } from '../../Types/user';
 import { AVAILABLE_DATABASE_SERVICES, EXPRESS_SERVER } from '../..';
 import request from 'supertest';
 import { Status } from '../../Common/ApiResponse';
+import dotenv from 'dotenv';
+import { getTablesDefinition } from '../../Types/db';
+import { DatabaseConfig } from '../../Interfaces/Database/Database';
+import MySQL from '../../Databases/MySQL';
+import DatabaseService from '../../Databases/DatabaseService';
 
 
 describe('Auth testing', () => {
+    dotenv.config();
 
     jest.setTimeout(10 * 1000);
 
@@ -22,24 +28,28 @@ describe('Auth testing', () => {
         email: sentUser.username,
     } 
     
-    async function cleanDatabase(){
-        if(!AVAILABLE_DATABASE_SERVICES.main) {
-            throw new Error('Database service not available');
-        }
-        const userTable = new User(AVAILABLE_DATABASE_SERVICES.main);
-        const deleteResult = await userTable.deleteOne(internalUser);
-        console.log({deleteResult});
-    }
-
     describe('Register new user', () => {
-        
-
-        it("Delete an user", async () => {
-            const server = await request(`http://localhost:${process.env.PORT}`).post('/auth/register').send(sentUser);
-            await cleanDatabase();
-        });
 
         it("Possible conditions", async () => {
+            const mysqlConfig: DatabaseConfig = {
+                port: Number.parseInt(process.env.M_DATABASE_PORT ?? '3306'),
+                host: process.env.M_DATABASE_HOST ?? 'localhost',
+                user: process.env.M_DATABASE_USER ?? 'root',
+                password: process.env.M_DATABASE_PASSWORD ?? 'password',
+                database: process.env.M_DATABASE_NAME ?? 'main',
+                testTimer: Number.parseInt(process.env.M_DATABASE_TIME_TO_CHECK ?? '10000'),
+                idleTimeout: Number.parseInt(process.env.M_DATABASE_IDLE_TIMEOUT ?? '10000'),
+            }
+            const mysqlTables = [User.table];
+            const mysql = new MySQL(mysqlConfig, mysqlTables); 
+            const mainDatabaseService = new DatabaseService(mysql);
+
+            await mainDatabaseService.connect(0);
+            const userTable = new User(mainDatabaseService);
+            const result = await userTable.deleteOne(internalUser);
+            console.log({result});
+
+
             const server = await request(`http://localhost:${process.env.PORT}`);
             let response = await server.post('/auth/register').send(sentUser);
             expect(response.body.status).toBe(Status.Success);

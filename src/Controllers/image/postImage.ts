@@ -31,7 +31,7 @@ export default function postImage(req: Request, res: Response) {
       .webp()
       .toFile(finalWebpPath ?? '', (err: any, info: any) => {
         if (err) {
-          throw err;
+          return res.status(500).json(ApiError(err.message));
         }
         fs.unlinkSync(req.file?.path ?? '');
         return res.json(ApiSuccess(finalFilename));
