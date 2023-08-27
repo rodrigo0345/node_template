@@ -1,22 +1,18 @@
-import express from 'express';
 import initial_config from './Common/InitialConfig';
 import MySQL from './Databases/MySQL';
 import { DatabaseConfig } from './Interfaces/Database/Database';
 import { getTablesDefinition } from './Types/db';
 import DatabaseService from './Databases/DatabaseService';
-import ExpressServer from './Server/ExpressServer';
-import ServerConfigInterface from './Interfaces/Server/ServerConfig';
 import Middleware from './Middleware/Middleware';
 import ServerInterface from './Interfaces/Server/Server';
 import  { authConfig } from './Controllers/auth/Auth';
 import Controller from './Controllers/Controller';
 import DatabaseServiceImpl from './Interfaces/Database/DatabaseServiceInterface';
-import dev_log from './Common/DevLog';
 import { imageConfig } from './Controllers/image/Image';
 import Redis from './Databases/Redis';
-import Cache from './Types/cache';
 import { postsConfig } from './Controllers/posts/Post';
 import dotenv from 'dotenv';
+import ExpressServer from './Server/ExpressServer';
 
 /* 
     Here is the entry point of the application.
