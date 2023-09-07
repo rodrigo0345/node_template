@@ -1,9 +1,17 @@
-import Database, { DatabaseConfig } from "./Database";
-import DatabaseTable from "./DatabaseTable";
+import Database, {
+    DatabaseConfig,
+} from './Database';
+import DatabaseTable from './DatabaseTable';
 
-export default  interface DatabaseServiceInterface {
+export default interface DatabaseServiceInterface {
     connect(offsetDelay: number): void;
-    query(callback: (connection: any) => unknown): Promise<unknown>;
+    query(
+        callback: (
+            connection: any,
+        ) => unknown,
+    ): Promise<unknown>;
     test(): boolean;
     disconnect(): void;
+    get getDbtype(): string;
+    set setDbtype(dbtype: string);
 }

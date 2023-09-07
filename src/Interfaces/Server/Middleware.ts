@@ -1,7 +1,13 @@
-import ServerInterface from "./Server";
-import { Request } from "express";
+import ServerInterface from './Server';
+import { Request } from 'express';
 
-export  default interface MiddlewareInterface {
-    execute: (req: Request, res: Response, next: () => void) => void;
-    setState(state: "active" | "notactive"): void;
+export default interface MiddlewareInterface {
+    execute: (
+        req: Request,
+        res: Response,
+        next: () => void,
+    ) => void;
+    setState(
+        state: 'active' | 'notactive',
+    ): void;
 }

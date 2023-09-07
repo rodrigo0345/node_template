@@ -1,13 +1,12 @@
 {
   "singleQuote": true,
-  "trailingComma": "all",
   "useTabs": false,
-  "tabWidth": 2,
+  "tabWidth": 4,
   "overrides": [
     {
       "files": "*",
       "options": {
-        "tadWidth": 2,
+        "tabWidth": 4,
         "printWidth": 40,
         "singleQuote": true
       }

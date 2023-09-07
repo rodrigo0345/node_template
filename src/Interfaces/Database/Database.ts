@@ -1,17 +1,24 @@
-import DatabaseTable from "./DatabaseTable";
+import DatabaseTable from './DatabaseTable';
 
-export default interface Database{
+export default interface Database {
+    type: string;
     connect(): void;
     disconnect(): void;
 
-    execute(callback: (connection: any) => unknown): Promise<any>;
+    execute(
+        callback: (
+            connection: any,
+        ) => unknown,
+    ): Promise<any>;
     test(): Promise<boolean>;
-    createTable(table: DatabaseTable): void;
+    createTable(
+        table: DatabaseTable,
+    ): void;
 
     isConnected(): boolean;
 }
 
-export interface DatabaseConfig{
+export interface DatabaseConfig {
     port: number;
     host: string;
     user: string;
